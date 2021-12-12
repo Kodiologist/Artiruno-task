@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+   <meta charset="UTF-8">
+   <title>Task</title>
+
+<style>
+.mode
+   {display: none;}
+
+#instructions
+   {text-align: center;}
+
+#problem_example
+   {border: thin solid black;
+    padding: 5px;
+    margin-left: 1em;
+    margin-right: 1em;}
+
+#problem_example > div
+   {font-style: italic;}
+
+#mode__demog ul
+   {list-style: none;}
+
+#comments
+   {margin-bottom: 2em;}
+</style>
+
+<script src="task.js"></script>
+
+<body>
+
+<noscript><p>This HIT requires JavaScript.</p></noscript>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__consent">
+CONSENT
+
+<form id="consent_form">
+<input type="text" class="consent_statement" id="consent_statement" value="">
+<button type="submit" id="consent_button" value="submitted">OK</button>
+</form>
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__problem_setup">
+
+<p>In this study, I'll ask you to tell me about a decision that you haven't made yet, but you will make soon. The decision should be one you feel is weighty enough to be worth real thought. Ideally it's also a decision such that, by 1 month from today, it's likely that you'll have made the decision and gotten some idea of how well your choice worked out for you. You might consider a decision situation with only two options (such as whether to take or not take a certain action) or a situation with several options.</p>
+
+<p>Here are a lot of examples of the kind of decision you might use for this study (but, of course, you can still use something different):</p>
+
+<ul>
+<li>Deciding whether to quit a job, or deciding which of several job offers to take
+<li>Deciding whether to start a new business venture, or whether to give up on an existing one
+<li>Deciding whether to start or drop out of school, or deciding which school to attend
+<li>Deciding whether to join or leave a religion
+<li>Deciding who to vote for
+<li>Deciding whether to come out as LGBT to someone you know
+<li>Deciding whether to ask somebody on a date, marry, or break up
+<li>Deciding whether to have a child
+<li>Deciding where to move, or what home to rent or buy
+<li>Deciding on expensive purchases, such as a car
+<li>Medical decisions, such whether to get a vaccine, whether to undergo surgery, or whether to seek help for a mental-health problem
+</ul>
+
+<p>Briefly describe the decision you'll consider for this study. Don't include any personally identifying details.</p>
+
+<textarea id="problem_description"></textarea>
+
+<p>Approximately, what is the latest date by which you think you'll have made the decision and be able to say whether you're happy with the choice you made?</p>
+
+<input type="date" id="expected_resolution_date">
+
+<p>Now your task is to represent your alternatives (options) and their pros and cons in a certain format. The idea is to represent each alternative with a set of "criteria"; each criterion is a property of the option or its likely outcome. For examine, if you're choosing between job offers, a criterion could be <b>Salary</b>. You can have as many criteria as you want. The important thing is to have enough criteria to capture what makes options appealing or unappealing to you, but not have so many that you get overwhelmed—if you don't care about something, don't use it as a criterion. I suggest aiming for 2 to 7.</p>
+
+<p>Each criterion has several possible values, called "levels", and the levels are ordered with the worst first and the best last. So you might give <b>Salary</b> the levels <b>Low</b>, <b>Medium</b>, and <b>High</b>. You could just as well change these levels (e.g., adding <b>Very high</b> after <b>High</b>), or you could use dollar amounts instead of words. The important thing is that you have enough levels to describe your alternatives, and later levels are better than earlier ones. So if two jobs have different salaries in dollars, but the difference is too small to affect your decision at all, you should use the same level of <b>Salary</b> for both alternatives.</p>
+
+<p>Here's a complete example of a situation in which somebody is deciding between job offers:</p>
+
+<div id="problem_example">
+
+<div>Criteria</div>
+
+<ul>
+<li>Salary
+<ol><li>Below average<li>Average<li>High</ol></li>
+<li>Location
+<ol><li>Far from home<li>Close to home</ol></li>
+<li>Training opportunities
+<ol><li>Low<li>High</ol></li>
+</ul>
+
+<div>Alternatives</div>
+
+<ul>
+<li>Job A
+<ul><li>Salary: Below average<li>Location: Close to home<li>Training opportunities: High</ul></li>
+<li>Job B
+<ul><li>Salary: Average<li>Location: Far from home<li>Training opportunities: High</ul></li>
+<li>Job C
+<ul><li>Salary: High<li>Location: Far from home<li>Training opportunities: Low</ul></li>
+</ul>
+
+</div>
+
+<p>Enter the criteria you want to use:</p>
+
+<ul id="criteria_entry">
+<li id="new_criterion_li">
+<button id="new_criterion" type="button">Add a criterion</button></li>
+</ul>
+
+<p>Now enter the alternatives and rate them on the criteria. (You can still edit the criteria above, but doing so will reset your choices of criterion levels here.)</p>
+
+<ul id="alt_entry">
+<li id="new_alt_li">
+<button id="new_alt" type="button">Add an alternative</button></li>
+</ul>
+
+<button id="problem_setup_done" type="button">Done</button>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__demog">
+
+<p>How old are you?
+
+<p><input id="age">
+
+<p>What is your gender?
+
+<ul>
+<li><label>
+<input name="gender" value="male" type="radio">Male</label>
+<li><label>
+<input name="gender" value="female" type="radio">Female</label>
+<li><label>
+<input name="gender" value="other" type="radio">Other</label>
+<input id="gender_other">
+</ul>
+
+<p>What is your race? (Indicate all that apply.)
+
+<ul>
+<li><label><input id='race_asian' type='checkbox'>Asian</label>
+<li><label><input id='race_black' type='checkbox'>Black</label>
+<li><label><input id='race_hispanic' type='checkbox'>Hispanic</label>
+<li><label><input id='race_mena' type='checkbox'>Middle Eastern or North African</label>
+<li><label><input id='race_natam' type='checkbox'>Native American</label>
+<li><label><input id='race_islander' type='checkbox'>Native Hawaiian or other Pacific islander</label>
+<li><label><input id='race_white' type='checkbox'>White</label>
+<li><label>Other <input id="race_other"></label>
+</ul>
+
+<button id="demog_done" type="button">Done</button>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__done">
+<img alt="U DID IT CHAMP" src="https://i.imgur.com/F5T8aVB.jpg">
+<p>Thanks for helping me out.</p>
+
+<form id="submission_form" method="post">
+
+<div><strong>(Optional)</strong> Comments (if you want a reply, email me instead, at the domain <code>arfer.net</code>, username <code>kodi</code>)</div>
+<div><textarea id="comments" name="comments"></textarea></div>
+
+<input type="hidden" value="" name="assignmentId" id="assignmentId"/>
+<input type="submit" name="submitButton" value="Submit HIT">
+</form>
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+</body></html>
