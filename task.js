@@ -200,6 +200,7 @@ let mode__demog = function()
         if (validation_error !== null)
            {alert(validation_error)
             return}
+        save('country', E('country').value)
         save('age', age)
         save('gender', gender)
         save('race', race)

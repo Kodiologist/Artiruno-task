@@ -1,6 +1,9 @@
 #!/bin/env python3
 
 import sys, re, subprocess
+import iso3166
+
+default_country = 'us'
 
 def main(mode, submit_url = ''):
     assert mode in ('plain', 'mturk')
@@ -22,7 +25,14 @@ def main(mode, submit_url = ''):
                 .replace('TASK_VERSION', task_version)
                 .replace('SUBMIT_URL', submit_url) +
             '</script>').replace('\\', '\\\\'),
-        read('task.html').replace('CONSENT', read('consent')),
+        read('task.html')
+            .replace('CONSENT', read('consent'))
+            .replace('COUNTRIES', '\n'.join(
+                '<option value="{}"{}>{}</option>'.format(
+                   x.alpha2.lower(),
+                   ' selected' if x.alpha2.lower() == default_country else '',
+                   x.name)
+                for x in iso3166.countries)),
         count = 1)
 
     if mode == 'plain':
