@@ -56,6 +56,7 @@ let startup = function()
    {save('task_version', 'TASK_VERSION')
     save('user_agent', window.navigator.userAgent)
     save('subject_key', 'SUBJECT_KEY')
+    save('time_started', Date.now())
 
     if (typeof turkSetAssignmentID == 'undefined')
        {E('submission_form').action = 'SUBMIT_URL'}
@@ -209,7 +210,8 @@ let mode__demog = function()
     scroll_to_top()}
 
 let mode__done = function()
-   {E('mode__done').style.display = 'block'
+   {save('time_done', Date.now())
+    E('mode__done').style.display = 'block'
     scroll_to_top()}
 
 startup()
