@@ -55,6 +55,7 @@ let scroll_to_top = function()
 let startup = function()
    {save('task_version', 'TASK_VERSION')
     save('user_agent', window.navigator.userAgent)
+    save('subject_key', 'SUBJECT_KEY')
 
     if (typeof turkSetAssignmentID == 'undefined')
        {E('submission_form').action = 'SUBMIT_URL'}
