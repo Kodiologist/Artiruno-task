@@ -76,6 +76,7 @@ let mode__consent = function()
        {e.preventDefault()
         if (/^\s*i\s*consent\s*$/i.test(E('consent_statement').value))
            {time_consented = Date.now()
+            save('time_consented', time_consented)
             E('mode__consent').style.display = 'none'
             mode__problem_setup()}})
 
@@ -167,7 +168,6 @@ let mode__problem_setup = function()
         save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('criteria', criteria)
         save('alts', alts)
-        save('time_consented', time_consented)
         save('problem_setup_ms', Date.now() - time_consented)
         E('mode__problem_setup').style.display = 'none'
         mode__demog()})
