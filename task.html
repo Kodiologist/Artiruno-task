@@ -12,13 +12,13 @@
 #instructions
    {text-align: center;}
 
-#problem_example
+.problem_example
    {border: thin solid black;
     padding: 5px;
     margin-left: 1em;
     margin-right: 1em;}
 
-#problem_example > div
+.problem_example > div
    {font-style: italic;}
 
 #mode__demog ul
@@ -74,17 +74,19 @@ CONSENT
 
 <textarea id="problem_description"></textarea>
 
-<p>Approximately, what is the latest date by which you think you'll have made the decision and be able to say whether you're happy with the choice you made?</p>
+<p>Approximately, what is the latest date by which you think you'll have made the decision, and you'll be able to say whether you're happy with the choice you made?</p>
 
 <input type="date" id="expected_resolution_date">
 
 <p>Now your task is to represent your alternatives (options) and their pros and cons in a certain format. The idea is to represent each alternative with a set of "criteria"; each criterion is a property of the option or its likely outcome. For examine, if you're choosing between job offers, a criterion could be <b>Salary</b>. You can have as many criteria as you want. The important thing is to have enough criteria to capture what makes options appealing or unappealing to you, but not have so many that you get overwhelmed—if you don't care about something, don't use it as a criterion. I suggest aiming for 2 to 7.</p>
 
-<p>Each criterion has several possible values, called "levels", and the levels are ordered with the worst first and the best last. So you might give <b>Salary</b> the levels <b>Low</b>, <b>Medium</b>, and <b>High</b>. You could just as well change these levels (e.g., adding <b>Very high</b> after <b>High</b>), or you could use dollar amounts instead of words. The important thing is that you have enough levels to describe your alternatives, and later levels are better than earlier ones. So if two jobs have different salaries in dollars, but the difference is too small to affect your decision at all, you should use the same level of <b>Salary</b> for both alternatives.</p>
+<p>Each criterion has several possible values, called "levels", and the levels are ordered with the worst first and the best last. So you might give <b>Salary</b> the levels <b>Low</b>, <b>Medium</b>, and <b>High</b>. You could just as well change these levels (e.g., adding <b>Very high</b> after <b>High</b>), or you could use dollar amounts instead of words. The important thing is that you have enough levels to describe your alternatives, and later levels are better than earlier ones. So if two jobs have different salaries in dollars, but the difference is too small to affect your decision at all, you should use the same level of <b>Salary</b> for both alternatives. The differences between levels aren't assumed to be equally important—you might care about <b>Salary</b> going from <b>Low</b> to <b>Medium</b> much more than from <b>Medium</b> to <b>High</b>.
+
+</p>
 
 <p>Here's a complete example of a situation in which somebody is deciding between job offers:</p>
 
-<div id="problem_example">
+<div class="problem_example">
 
 <div>Criteria</div>
 
@@ -109,6 +111,37 @@ CONSENT
 </ul>
 
 </div>
+
+<p>Here's an example of a yes-or-no decision, in which somebody is deciding whether to drop out of college. Remember, criteria levels are listed worst-first, so we put the <b>High</b> level of the criterion <b>Cost</b> before <b>Low</b>, unlike <b>Salary</b> above.</p>
+
+<div class="problem_example">
+
+<div>Criteria</div>
+
+<ul>
+<li>Cost
+<ol><li>High<li>Low</ol></li>
+<li>Future job opportunities
+<ol><li>Somewhat less<li>Somewhat more</ol></li>
+<li>Social life
+<ol><li>Worse<li>Better</ol></li>
+<li>Town I'll live in
+<ol><li>Worse<li>Better</ol></li>
+</ul>
+
+<div>Alternatives</div>
+
+<ul>
+<li>Stay
+<ul><li>Cost: High<li>Future job opportunities: Somewhat more<li>Social life: Better<li>Town I'll live in: Worse</ul></li>
+<li>Drop out
+<ul>
+<li>Cost: Low<li>Future job opportunities: Somewhat less<li>Social life: Worse<li>Town I'll live in: Better</ul></li>
+</ul>
+
+</div>
+
+<p>Make sure to only include alternatives that are real options you could actually take, not just options you wish that you had. After all, the point of this exercise is to help you make a real choice. But, you can certainly include criteria that represent a feature of the alternative or its outcome that you're only giving your best guess about, like how much you'll learn in a training program.</p>
 
 <p>Enter the criteria you want to use:</p>
 
