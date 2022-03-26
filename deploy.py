@@ -5,7 +5,7 @@ import iso3166
 
 default_country = 'us'
 
-def main(mode, submit_url = ''):
+def main(mode, artiruno_webi_path, submit_url = ''):
     assert mode in ('plain', 'mturk')
     assert mode == 'mturk' or submit_url
 
@@ -16,16 +16,24 @@ def main(mode, submit_url = ''):
     task_version = subprocess.check_output(
         ('git', 'log', '-1', '--format=%H'), encoding = "ASCII").strip()
 
+    def artiruno_webi(regex, text = read(artiruno_webi_path)):
+        return re.search(regex, text, flags = re.DOTALL).group(1)
+
     html = re.sub(
-        '<script.+?</script>',
+        '<script src="task.js"></script>',
         (("<script src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>"
             if mode == 'mturk' else '') +
             '\n<script>' +
+            artiruno_webi("<script id='defs'>(.+?)</script>") +
             read('task.js')
                 .replace('TASK_VERSION', task_version)
                 .replace('SUBMIT_URL', submit_url) +
             '</script>').replace('\\', '\\\\'),
         read('task.html')
+            .replace('</style>',
+                '</style>' +
+                    artiruno_webi('<!-- SCRIPSTY -->(.+?)<!-- SCRIPSTY -->'),
+                1)
             .replace('CONSENT', read('consent'))
             .replace('COUNTRIES', '\n'.join(
                 '<option value="{}"{}>{}</option>'.format(
@@ -37,7 +45,7 @@ def main(mode, submit_url = ''):
 
     if mode == 'plain':
 
-        with open('/tmp/task.html', 'wt') as o:
+        with open('/tmp/artiruno_pyodide_testing_SNtl1aBcvhoD5PO8upr4/task.html', 'wt') as o:
             o.write(html)
 
     else:

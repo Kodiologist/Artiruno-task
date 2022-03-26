@@ -6,6 +6,7 @@ window.onload = function() {
 // ------------------------------------------------------------
 
 let saved = {}
+let pyodide = null
 
 // ------------------------------------------------------------
 // * Helper functions
@@ -66,7 +67,11 @@ let startup = function()
        {turkSetAssignmentID()
         E('submission_form').action =
             turkGetSubmitToHost() + '/mturk/externalSubmit'}
-    mode__consent()}
+
+    load_vda(function(pyodide_obj)
+      // Defined by Artiruno.
+        {pyodide = pyodide_obj
+         mode__consent()})}
 
 // ------------------------------------------------------------
 // * Modes
@@ -170,9 +175,16 @@ let mode__problem_setup = function()
         save('alts', alts)
         save('problem_setup_ms', Date.now() - saved.time_consented)
         E('mode__problem_setup').style.display = 'none'
-        mode__demog()})
+        mode__vda()})
 
     E('mode__problem_setup').style.display = 'block'
+    scroll_to_top()}
+
+let mode__vda = function()
+   {pyodide.runPython('artiruno.initialize_web_interface')(
+        'task', saved.criteria, saved.alts)
+
+    E('mode__vda').style.display = 'block'
     scroll_to_top()}
 
 let mode__demog = function()
