@@ -5,7 +5,7 @@ window.onload = function() {
 // * Globals
 // ------------------------------------------------------------
 
-let time_consented = null;
+let saved = {}
 
 // ------------------------------------------------------------
 // * Helper functions
@@ -39,7 +39,8 @@ let button = function(text, f)
     return x}
 
 let save = function(name, val)
-   {let e = document.createElement('input')
+   {saved[name] = val
+    let e = document.createElement('input')
     e.type = 'hidden'
     e.name = name
     e.value = JSON.stringify(val)
@@ -75,8 +76,7 @@ let mode__consent = function()
    {E('consent_form').addEventListener('submit', function(e)
        {e.preventDefault()
         if (/^\s*i\s*consent\s*$/i.test(E('consent_statement').value))
-           {time_consented = Date.now()
-            save('time_consented', time_consented)
+           {save('time_consented', Date.now())
             E('mode__consent').style.display = 'none'
             mode__problem_setup()}})
 
@@ -168,7 +168,7 @@ let mode__problem_setup = function()
         save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('criteria', criteria)
         save('alts', alts)
-        save('problem_setup_ms', Date.now() - time_consented)
+        save('problem_setup_ms', Date.now() - saved.time_consented)
         E('mode__problem_setup').style.display = 'none'
         mode__demog()})
 
