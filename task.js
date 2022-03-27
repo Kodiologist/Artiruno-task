@@ -18,6 +18,10 @@ let butlast = x =>
 let E = x =>
     document.getElementById(x)
 
+let BC = (x, f) =>
+  // "Button callback"
+    document.getElementById(x).addEventListener('click', f)
+
 let newe = function(x, ...kids)
    {x = document.createElement(x)
     x.append(...kids)
@@ -103,7 +107,7 @@ let mode__problem_setup = function()
             this.parentElement)
         refresh_criteria_for_alt()}
 
-    E('new_criterion').addEventListener('click', function()
+    BC('new_criterion', function()
        {E('criteria_entry').insertBefore(
             newe('li',
                 field('Criterion name', refresh_criteria_for_alt),
@@ -130,7 +134,7 @@ let mode__problem_setup = function()
                     newe('select', ...levels.map(v =>
                         newe('option', v))))))}}
 
-    E('new_alt').addEventListener('click', function()
+    BC('new_alt', function()
        {E('alt_entry').insertBefore(
             newe('li',
                 field('Alternative name'),
@@ -145,7 +149,7 @@ let mode__problem_setup = function()
             Array.from(a.lastChild.children).map(c =>
                 c.lastChild.value.trim())])
 
-    E('problem_setup_done').addEventListener('click', function()
+    BC('problem_setup_done', function()
        {let criteria = digest_criteria()
         let alts = digest_alts()
         let validation_error = (
@@ -188,7 +192,7 @@ let mode__vda = function()
     scroll_to_top()}
 
 let mode__demog = function()
-   {E('demog_done').addEventListener('click', function()
+   {BC('demog_done', function()
        {let age = E('age').value.trim()
         age = /^\d+$/.test(age) ? Number(age) : null
         let gender = document.querySelector('input[name="gender"]:checked')
