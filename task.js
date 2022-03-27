@@ -169,6 +169,8 @@ let mode__problem_setup = function()
           ? 'You need at least two alternatives.'
           : any_dupes(alts.map(([name,]) => name))
           ? 'No two alternatives can have the same name.'
+          : any_dupes(alts.map(([, values]) => JSON.stringify(values)))
+          ? 'No two alternatives can have the same levels on all criteria.'
           : null)
         if (validation_error !== null)
            {alert(validation_error)
