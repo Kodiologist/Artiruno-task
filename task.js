@@ -6,6 +6,7 @@ window.onload = function() {
 // ------------------------------------------------------------
 
 let saved = {}
+let buttons_assigned_to_callbacks = new Set()
 let pyodide = null
 
 // ------------------------------------------------------------
@@ -18,9 +19,11 @@ let butlast = x =>
 let E = x =>
     document.getElementById(x)
 
-let BC = (x, f) =>
+let BC = function(x, f)
   // "Button callback"
-    document.getElementById(x).addEventListener('click', f)
+   {if (!buttons_assigned_to_callbacks.has(x))
+       {document.getElementById(x).addEventListener('click', f)
+        buttons_assigned_to_callbacks.add(x)}}
 
 let newe = function(x, ...kids)
    {x = document.createElement(x)
@@ -44,12 +47,15 @@ let button = function(text, f)
     return x}
 
 let save = function(name, val)
-   {saved[name] = val
-    let e = document.createElement('input')
-    e.type = 'hidden'
-    e.name = name
-    e.value = JSON.stringify(val)
-    E('submission_form').appendChild(e)}
+   {let id = 'saved--' + name
+    if (!E(id))
+       {let e = newe('input')
+        e.type = 'hidden'
+        e.id = id
+        e.name = name
+        E('submission_form').appendChild(e)}
+    saved[name] = val
+    E(id).value = JSON.stringify(val)}
 
 let scroll_to_top = function()
    {document.documentElement.scrollTop = 0}
@@ -179,7 +185,8 @@ let mode__problem_setup = function()
         save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('criteria', criteria)
         save('alts', alts)
-        save('problem_setup_ms', Date.now() - saved.time_consented)
+        if (!saved.hasOwnProperty('problem_setup_ms'))
+            save('first_problem_setup_ms', Date.now() - saved.time_consented)
         E('mode__problem_setup').style.display = 'none'
         mode__vda()})
 
@@ -187,7 +194,12 @@ let mode__problem_setup = function()
     scroll_to_top()}
 
 let mode__vda = function()
-   {pyodide.runPython('artiruno.initialize_web_interface')(
+   {BC('return_to_problem_setup', async function()
+       {await pyodide.runPythonAsync('artiruno.stop_web_vda()')
+        E('mode__vda').style.display = 'none'
+        mode__problem_setup()})
+
+    pyodide.runPython('artiruno.initialize_web_interface')(
         'task', saved.criteria, saved.alts)
 
     E('mode__vda').style.display = 'block'
