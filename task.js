@@ -103,25 +103,25 @@ let mode__problem_setup = function()
        {this.parentElement.remove()}
     let delete_parent_r = function()
        {this.parentElement.remove()
-        refresh_criteria_for_alt()}
+        regen()}
 
     let new_level = function()
        {this.parentElement.parentElement.insertBefore(
             newe('li',
-                field('Level name', refresh_criteria_for_alt),
+                field('Level name', regen),
                 button('Delete this level', delete_parent_r)),
             this.parentElement)
-        refresh_criteria_for_alt()}
+        regen()}
 
     BC('new_criterion', function()
        {E('criteria_entry').insertBefore(
             newe('li',
-                field('Criterion name', refresh_criteria_for_alt),
+                field('Criterion name', regen),
                 button('Delete this criterion', delete_parent_r),
                 newe('ol',
                     newe('li', button('Add a level', new_level)))),
             E('new_criterion_li'))
-        refresh_criteria_for_alt()})
+        regen()})
 
     let digest_criteria = () =>
         butlast(E('criteria_entry').children).map(c =>
@@ -129,8 +129,17 @@ let mode__problem_setup = function()
             butlast(c.lastChild.children).map(v =>
                 v.firstChild.value.trim())])
 
-    let refresh_criteria_for_alt = function(event, alt)
+    let regen = function(event, alt)
        {let criteria = digest_criteria()
+        // Refresh the best-possible and worst-possible option displays.
+        for (let ix of [0, -1])
+           {E('possible-option-' + ix).innerHTML = ''
+            E('possible-option-' + ix).append(...criteria.map(
+                ([name, levels]) =>
+                    newe('li', name + ': ' +
+                        (levels.length ? levels.slice(ix)[0] : ''))))}
+        // Reset the criterion <select> elements for each alternative
+        // (or only `alt`, if given).
         for (let e of butlast(E('alt_entry').children))
            {if (typeof alt !== 'undefined' && e !== alt)
                 continue
@@ -147,7 +156,7 @@ let mode__problem_setup = function()
                 button('Delete this alternative', delete_parent),
                 newe('ul')),
             E('new_alt_li'))
-        refresh_criteria_for_alt(null, E('new_alt_li').previousSibling)})
+        regen(null, E('new_alt_li').previousSibling)})
 
     let digest_alts = () =>
         butlast(E('alt_entry').children).map(a =>
