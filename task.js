@@ -119,9 +119,9 @@ let mode__problem_setup = function()
             butlast(c.lastChild.children).map(v =>
                 v.firstChild.value.trim())])
 
-     let refresh_criteria_for_alt = function(event, alt)
-        {let criteria = digest_criteria()
-         for (let e of butlast(E('alt_entry').children))
+    let refresh_criteria_for_alt = function(event, alt)
+       {let criteria = digest_criteria()
+        for (let e of butlast(E('alt_entry').children))
            {if (typeof alt !== 'undefined' && e !== alt)
                 continue
             e.lastChild.innerHTML = ''
@@ -137,7 +137,7 @@ let mode__problem_setup = function()
                 button('Delete this alternative', delete_parent),
                 newe('ul')),
             E('new_alt_li'))
-       refresh_criteria_for_alt(null, E('new_alt_li').previousSibling)})
+        refresh_criteria_for_alt(null, E('new_alt_li').previousSibling)})
 
     let digest_alts = () =>
         butlast(E('alt_entry').children).map(a =>
