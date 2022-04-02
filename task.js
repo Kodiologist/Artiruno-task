@@ -214,7 +214,14 @@ let mode__vda = function()
         mode__problem_setup()})
 
     pyodide.runPython('artiruno.initialize_web_interface')(
-        'task', saved.criteria, saved.alts)
+        'task', saved.criteria, saved.alts, time_started,
+        function(questions, result)
+           {save('vda_questions',
+                questions.toJs({dict_converter: Object.fromEntries}))
+            save('vda_result', result)
+            E('dm').appendChild(button('Continue', function()
+               {E('mode__vda').style.display = 'none'
+                mode__demog()}))})
 
     E('mode__vda').style.display = 'block'
     scroll_to_top()}
