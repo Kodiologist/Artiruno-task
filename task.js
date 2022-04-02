@@ -6,6 +6,7 @@ window.onload = function() {
 // ------------------------------------------------------------
 
 let saved = {}
+let time_started = null
 let buttons_assigned_to_callbacks = new Set()
 let pyodide = null
 
@@ -60,6 +61,9 @@ let save = function(name, val)
 let scroll_to_top = function()
    {document.documentElement.scrollTop = 0}
 
+let time_elapsed = () =>
+    performance.now() - time_started
+
 // ------------------------------------------------------------
 // * Startup
 // ------------------------------------------------------------
@@ -68,7 +72,8 @@ let startup = function()
    {save('task_version', 'TASK_VERSION')
     save('user_agent', window.navigator.userAgent)
     save('subject_key', 'SUBJECT_KEY')
-    save('time_started', Date.now())
+    save('time_started_posixms', Date.now())
+    time_started = performance.now()
 
     if (typeof turkSetAssignmentID == 'undefined')
        {E('submission_form').action = 'SUBMIT_URL'}
@@ -91,7 +96,7 @@ let mode__consent = function()
    {E('consent_form').addEventListener('submit', function(e)
        {e.preventDefault()
         if (/^\s*i\s*consent\s*$/i.test(E('consent_statement').value))
-           {save('time_consented', Date.now())
+           {save('time_consented', time_elapsed())
             E('mode__consent').style.display = 'none'
             mode__problem_setup()}})
 
@@ -194,8 +199,8 @@ let mode__problem_setup = function()
         save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('criteria', criteria)
         save('alts', alts)
-        if (!saved.hasOwnProperty('problem_setup_ms'))
-            save('first_problem_setup_ms', Date.now() - saved.time_consented)
+        if (!saved.hasOwnProperty('time_first_problem_setup'))
+            save('time_first_problem_setup', time_elapsed())
         E('mode__problem_setup').style.display = 'none'
         mode__vda()})
 
@@ -249,7 +254,7 @@ let mode__demog = function()
     scroll_to_top()}
 
 let mode__done = function()
-   {save('time_done', Date.now())
+   {save('time_done', time_elapsed())
     E('mode__done').style.display = 'block'
     scroll_to_top()}
 
