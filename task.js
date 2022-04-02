@@ -227,7 +227,6 @@ let mode__demog = function()
             document.querySelectorAll('input[id^=race_]')).map(x =>
                [x.id.replace(/^race_/, ''),
                 x.id === 'race_other' ? x.value.trim() : x.checked])
-        console.log(JSON.stringify(race))
         let validation_error = (
             age === null
           ? 'Provide your age in years as a whole number.'
