@@ -86,6 +86,8 @@ let startup = function()
     load_vda(function(pyodide_obj)
       // Defined by Artiruno.
         {pyodide = pyodide_obj
+         save('artiruno_commit',
+             pyodide.runPython('artiruno.git_commit'))
          mode__consent()})}
 
 // ------------------------------------------------------------
