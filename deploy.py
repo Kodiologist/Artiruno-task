@@ -26,16 +26,16 @@ def main(mode, artiruno_webi_path, submit_url = ''):
             '\n<script>' +
             artiruno_webi("<script id='defs'>(.+?)</script>") +
             read('task.js')
-                .replace('TASK_VERSION', task_version)
-                .replace('SUBMIT_URL', submit_url) +
+                .replace('[TASK_VERSION]', repr(task_version))
+                .replace('[SUBMIT_URL]', repr(submit_url)) +
             '</script>').replace('\\', '\\\\'),
         read('task.html')
             .replace('</style>',
                 '</style>' +
                     artiruno_webi('<!-- SCRIPSTY -->(.+?)<!-- SCRIPSTY -->'),
                 1)
-            .replace('CONSENT', read('consent'))
-            .replace('COUNTRIES', '\n'.join(
+            .replace('[CONSENT]', read('consent'))
+            .replace('[COUNTRIES]', '\n'.join(
                 '<option value="{}"{}>{}</option>'.format(
                    x.alpha2.lower(),
                    ' selected' if x.alpha2.lower() == default_country else '',

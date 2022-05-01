@@ -69,14 +69,14 @@ let time_elapsed = () =>
 // ------------------------------------------------------------
 
 let startup = function()
-   {save('task_version', 'TASK_VERSION')
+   {save('task_version', [TASK_VERSION])
     save('user_agent', window.navigator.userAgent)
-    save('subject_key', 'SUBJECT_KEY')
+    save('subject_key', [SUBJECT_KEY])
     save('time_started_posixms', Date.now())
     time_started = performance.now()
 
     if (typeof turkSetAssignmentID == 'undefined')
-       {E('submission_form').action = 'SUBMIT_URL'}
+       {E('submission_form').action = [SUBMIT_URL]}
     else
       // We're on MTurk.
        {turkSetAssignmentID()
