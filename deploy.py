@@ -5,10 +5,7 @@ import iso3166
 
 default_country = 'us'
 
-def main(mode, artiruno_webi_path, submit_url = ''):
-    assert mode in ('plain', 'mturk')
-    assert mode == 'mturk' or submit_url
-
+def main(artiruno_webi_path, submit_url):
     def read(x):
         with open(x, 'rt') as o:
             return o.read()
@@ -21,14 +18,11 @@ def main(mode, artiruno_webi_path, submit_url = ''):
 
     html = re.sub(
         '<script src="task.js"></script>',
-        (("<script src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>"
-            if mode == 'mturk' else '') +
-            '\n<script>' +
+        '<script>{}</script>'.format(
             artiruno_webi("<script id='defs'>(.+?)</script>") +
             read('task.js')
                 .replace('[TASK_VERSION]', repr(task_version))
-                .replace('[SUBMIT_URL]', repr(submit_url)) +
-            '</script>').replace('\\', '\\\\'),
+                .replace('[SUBMIT_URL]', repr(submit_url))).replace('\\', '\\\\'),
         read('task.html')
             .replace('</style>',
                 '</style>' +
@@ -43,22 +37,8 @@ def main(mode, artiruno_webi_path, submit_url = ''):
                 for x in iso3166.countries)),
         count = 1)
 
-    if mode == 'plain':
-
-        with open('/tmp/artiruno_pyodide_testing_SNtl1aBcvhoD5PO8upr4/task.html', 'wt') as o:
-            o.write(html)
-
-    else:
-
-        xml = ('<HTMLQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2011-11-11/HTMLQuestion.xsd">\n' +
-            '<HTMLContent><![CDATA[\n' +
-            html +
-            ']]></HTMLContent>' +
-            '<FrameHeight>0</FrameHeight>' +
-            '</HTMLQuestion>\n')
-
-        with open('/tmp/mturk_layout.xml', 'wt') as o:
-            o.write(xml)
+    with open('/tmp/artiruno_pyodide_testing_SNtl1aBcvhoD5PO8upr4/task.html', 'wt') as o:
+        o.write(html)
 
 if __name__ == '__main__':
     main(*sys.argv[1:])

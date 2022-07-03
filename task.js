@@ -77,13 +77,7 @@ let startup = function()
     let visit = [VISIT_NUMBER]
     let experimental_condition = [EXPERIMENTAL_CONDITION]
 
-    if (typeof turkSetAssignmentID == 'undefined')
-       {E('submission_form').action = [SUBMIT_URL]}
-    else
-      // We're on MTurk.
-       {turkSetAssignmentID()
-        E('submission_form').action =
-            turkGetSubmitToHost() + '/mturk/externalSubmit'}
+    E('submission_form').action = [SUBMIT_URL]
 
     load_vda(function(pyodide_obj)
       // Defined by Artiruno.
