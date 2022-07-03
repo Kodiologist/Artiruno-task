@@ -69,15 +69,18 @@ let time_elapsed = () =>
 // ------------------------------------------------------------
 
 let startup = function()
-   {save('task_version', [TASK_VERSION])
+   {document.body.appendChild(newe('form'))
+    document.body.lastChild.id = 'submission_form'
+    E('submission_form').method = 'post'
+    E('submission_form').action = [SUBMIT_URL]
+
+    save('task_version', [TASK_VERSION])
     save('user_agent', window.navigator.userAgent)
     save('session_key', [SESSION_KEY])
     save('time_started_posixms', Date.now())
     time_started = performance.now()
     let visit = [VISIT_NUMBER]
     let experimental_condition = [EXPERIMENTAL_CONDITION]
-
-    E('submission_form').action = [SUBMIT_URL]
 
     load_vda(function(pyodide_obj)
       // Defined by Artiruno.
@@ -130,8 +133,7 @@ let mode__problem_intro = function()
         save('problem_description', E('problem_description').value.trim())
         save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('time_problem_intro', time_elapsed())
-        E('mode__problem_intro').style.display = 'none'
-        throw 'not implemented: done with intro'})
+        E('submission_form').submit()})
 
     E('mode__problem_intro').style.display = 'block'
     scroll_to_top()}
@@ -300,6 +302,11 @@ let mode__demog = function()
 
 let mode__done = function()
    {save('time_done', time_elapsed())
+
+    BC('done_done', function()
+       {save('comments', E('comments').value.trim())
+        E('submission_form').submit()})
+
     E('mode__done').style.display = 'block'
     scroll_to_top()}
 
