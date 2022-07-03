@@ -1,4 +1,6 @@
-This repository houses the task code for Artiruno_, a study of verbal decision analysis.
+This repository houses the task code for a human-subjects study of Artiruno_, a tool for verbal decision analysis.
+
+Together, this repository, plus Artiruno itself, cover most of what's needed to run the task, but there's another piece, which is a small amount of web-server code to handle the database etc. Separating this out from the rest of my code for Arfer.net into an easily reusable component wouldn't be a small amount of work, so I'm probably not going to do it unless the need arises to run this task somewhere other than Arfer.net. Let's just say that I never liked web applications, and implementing this task hasn't improved my opinion of them, so if I rewrote this from scratch, the new version would involve much less JavaScript.
 
 .. _Artiruno: https://arfer.net/projects/artiruno
 
