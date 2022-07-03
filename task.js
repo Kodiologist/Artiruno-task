@@ -71,9 +71,11 @@ let time_elapsed = () =>
 let startup = function()
    {save('task_version', [TASK_VERSION])
     save('user_agent', window.navigator.userAgent)
-    save('subject_key', [SUBJECT_KEY])
+    save('session_key', [SESSION_KEY])
     save('time_started_posixms', Date.now())
     time_started = performance.now()
+    let visit = [VISIT_NUMBER]
+    let experimental_condition = [EXPERIMENTAL_CONDITION]
 
     if (typeof turkSetAssignmentID == 'undefined')
        {E('submission_form').action = [SUBMIT_URL]}
@@ -88,7 +90,22 @@ let startup = function()
         {pyodide = pyodide_obj
          save('artiruno_commit',
              pyodide.runPython('artiruno.git_commit'))
-         mode__consent()})}
+         if (visit === 1)
+           // This is the subject's first go at the task.
+             mode__consent()
+         else if (visit === 2)
+           // The subject has just entered basic problem information and
+           // been assigned a condition.
+            {if (experimental_condition === 'vda')
+                 mode__problem_setup()
+             else
+                 mode__demog()}
+         else if (visit === 3)
+           // The subject has returned after a month for the follow-up
+           // session.
+              throw 'Visit 3 not yet implemented'
+         else
+              throw 'Illegal visit code.'})}
 
 // ------------------------------------------------------------
 // * Modes
@@ -100,9 +117,29 @@ let mode__consent = function()
         if (/^\s*i\s*consent\s*$/i.test(E('consent_statement').value))
            {save('time_consented', time_elapsed())
             E('mode__consent').style.display = 'none'
-            mode__problem_setup()}})
+            mode__problem_intro()}})
 
     E('mode__consent').style.display = 'block'
+    scroll_to_top()}
+
+let mode__problem_intro = function()
+   {BC('problem_intro_done', function()
+       {let validation_error = (
+            !E('problem_description').value.trim()
+          ? 'Fill in the decision description.'
+          : !E('expected_resolution_date').value.trim()
+          ? 'Fill in the expected outcome date.'
+          : null)
+        if (validation_error !== null)
+           {alert(validation_error)
+            return}
+        save('problem_description', E('problem_description').value.trim())
+        save('expected_resolution_date', E('expected_resolution_date').value.trim())
+        save('time_problem_intro', time_elapsed())
+        E('mode__problem_intro').style.display = 'none'
+        throw 'not implemented: done with intro'})
+
+    E('mode__problem_intro').style.display = 'block'
     scroll_to_top()}
 
 let mode__problem_setup = function()
@@ -175,11 +212,7 @@ let mode__problem_setup = function()
        {let criteria = digest_criteria()
         let alts = digest_alts()
         let validation_error = (
-            !E('problem_description').value.trim()
-          ? 'Fill in the decision description.'
-          : !E('expected_resolution_date').value.trim()
-          ? 'Fill in the expected outcome date.'
-          : criteria.length < 2
+            criteria.length < 2
           ? 'You need at least two criteria.'
           : any_dupes(criteria.map(([name,]) => name))
           ? 'No two criteria can have the same name.'
@@ -197,8 +230,6 @@ let mode__problem_setup = function()
         if (validation_error !== null)
            {alert(validation_error)
             return}
-        save('problem_description', E('problem_description').value.trim())
-        save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('criteria', criteria)
         save('alts', alts)
         if (!saved.hasOwnProperty('time_first_problem_setup'))
