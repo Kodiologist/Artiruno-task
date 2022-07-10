@@ -22,6 +22,7 @@ def main(artiruno_webi_path, submit_url):
                 artiruno_webi('<!-- SCRIPSTY -->(.+?)<!-- SCRIPSTY -->'),
             1)
         .replace('[CONSENT]', read('consent'))
+        .replace('[DEBRIEFING]', read('debriefing'))
         .replace('[COUNTRIES]', '\n'.join(
             '<option value="{}"{}>{}</option>'.format(
                x.alpha2.lower(),
