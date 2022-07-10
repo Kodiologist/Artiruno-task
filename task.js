@@ -64,6 +64,18 @@ let scroll_to_top = function()
 let time_elapsed = () =>
     performance.now() - time_started
 
+let show_scenario = function(id, criteria, alts)
+   {E(id).innerHTML = ''
+    E(id).append(
+        newe('div', 'Criteria'),
+        newe('ul', ...criteria.map(([name, levels]) =>
+            newe('li', name, newe('ol', ...levels.map(
+                x => newe('li', x)))))),
+        newe('div', 'Alternatives'),
+        newe('ul', ...alts.map(([name, xs]) =>
+            newe('li', name, newe('ul', ...Array.from(xs.entries(), ([i, x]) =>
+                newe('li', criteria[i][0] + ': ' + x)))))))}
+
 // ------------------------------------------------------------
 // * Startup
 // ------------------------------------------------------------
@@ -242,16 +254,7 @@ let mode__vda = function()
         E('mode__vda').style.display = 'none'
         mode__problem_setup()})
 
-    E('subject_scenario_display').innerHTML = ''
-    E('subject_scenario_display').append(
-        newe('div', 'Criteria'),
-        newe('ul', ...saved.criteria.map(([name, levels]) =>
-            newe('li', name, newe('ol', ...levels.map(
-                x => newe('li', x)))))),
-        newe('div', 'Alternatives'),
-        newe('ul', ...saved.alts.map(([name, xs]) =>
-            newe('li', name, newe('ul', ...Array.from(xs.entries(), ([i, x]) =>
-                newe('li', saved.criteria[i][0] + ': ' + x)))))))
+    show_scenario('subject_scenario_display', saved.criteria, saved.alts)
 
     pyodide.runPython('artiruno.initialize_web_interface')(
         'task', saved.criteria, saved.alts, time_started,
