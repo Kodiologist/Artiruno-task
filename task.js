@@ -6,6 +6,8 @@ window.onload = function() {
 // ------------------------------------------------------------
 
 let saved = {}
+let previous_visit_data = [PREVIOUS_VISIT_DATA]
+let experimental_condition
 let time_started = null
 let buttons_assigned_to_callbacks = new Set()
 let pyodide = null
@@ -76,6 +78,23 @@ let show_scenario = function(id, criteria, alts)
             newe('li', name, newe('ul', ...Array.from(xs.entries(), ([i, x]) =>
                 newe('li', criteria[i][0] + ': ' + x)))))))}
 
+let digest_evaluation_inputs = function(id)
+   {for (let k of new Set(Array.from(
+            document.querySelectorAll("#" + id + " input, #" + id + " textarea"))
+            .map(x => x.name || x.id)))
+       {let v
+        if (k.startsWith('eval_desc_'))
+            v = E(k).value.trim()
+        else
+           {v = document.querySelector('input[name="' + k + '"]:checked')
+            if (v !== null)
+                v = v.value}
+        if (!v)
+           {alert('Complete all the items before continuing.')
+            return false}
+        save(k, v)}
+    return true}
+
 // ------------------------------------------------------------
 // * Startup
 // ------------------------------------------------------------
@@ -92,7 +111,7 @@ let startup = function()
     save('time_started_posixms', Date.now())
     time_started = performance.now()
     let visit = [VISIT_NUMBER]
-    let experimental_condition = [EXPERIMENTAL_CONDITION]
+    experimental_condition = [EXPERIMENTAL_CONDITION]
 
     load_vda(function(pyodide_obj)
       // Defined by Artiruno.
@@ -112,7 +131,7 @@ let startup = function()
          else if (visit === 3)
            // The subject has returned after a month for the follow-up
            // session.
-              throw 'Visit 3 not yet implemented'
+              mode__evaluation_either()
          else
               throw 'Illegal visit code.'})}
 
@@ -254,7 +273,7 @@ let mode__vda = function()
         E('mode__vda').style.display = 'none'
         mode__problem_setup()})
 
-    show_scenario('subject_scenario_display', saved.criteria, saved.alts)
+    show_scenario('display_subject_scenario', saved.criteria, saved.alts)
 
     pyodide.runPython('artiruno.initialize_web_interface')(
         'task', saved.criteria, saved.alts, time_started,
@@ -301,6 +320,48 @@ let mode__demog = function()
         mode__done()})
 
     E('mode__demog').style.display = 'block'
+    scroll_to_top()}
+
+let mode__evaluation_either = function()
+   {for (let k of ['problem_description', 'expected_resolution_date'])
+        E('redisplay_' + k).textContent = JSON.parse(previous_visit_data[k])
+
+    BC('evaluation_either_done', function()
+       {if (!digest_evaluation_inputs('mode__evaluation_either'))
+            return
+        E('mode__evaluation_either').style.display = 'none'
+        if (experimental_condition === 'vda')
+            mode__evaluation_vda()
+        else
+            mode__debrief()})
+
+    E('mode__evaluation_either').style.display = 'block'
+    scroll_to_top()}
+
+let mode__evaluation_vda = function()
+   {show_scenario('redisplay_subject_scenario',
+        JSON.parse(previous_visit_data.criteria),
+        JSON.parse(previous_visit_data.alts))
+    E('redisplay_vda_result').textContent =
+        JSON.parse(previous_visit_data.vda_result)
+
+    BC('evaluation_vda_done', function()
+       {if (!digest_evaluation_inputs('mode__evaluation_vda'))
+            return
+        E('mode__evaluation_vda').style.display = 'none'
+        mode__debrief()})
+
+    E('mode__evaluation_vda').style.display = 'block'
+    scroll_to_top()}
+
+let mode__debrief = function()
+   {save('time_started_debrief', time_elapsed())
+
+    BC('debrief_done', function()
+       {E('mode__debrief').style.display = 'none'
+        mode__done()})
+
+    E('mode__debrief').style.display = 'block'
     scroll_to_top()}
 
 let mode__done = function()

@@ -12,7 +12,7 @@
 #instructions
    {text-align: center;}
 
-.problem_example
+.problem_example, blockquote
    {border: thin solid black;
     padding: 5px;
     margin-left: 1em;
@@ -187,7 +187,7 @@
 
 <p>Here are the criteria and alternatives you chose, for your reference:</p>
 
-<div id="subject_scenario_display" class="problem_example">
+<div id="display_subject_scenario" class="problem_example">
 </div>
 
 <div style="margin-top: 1em">
@@ -250,6 +250,114 @@
 </ul>
 
 <button id="demog_done" type="button">Done</button>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__evaluation_either">
+
+<p>In the first session of this study, you said you'd consider this decision situation:
+
+<blockquote id="redisplay_problem_description"></blockquote>
+
+<p>(I also asked "Approximately, what is the latest date by which you think you'll have made the decision, and you'll be able to say whether you're happy with the choice you made?". Your response was "<span id="redisplay_expected_resolution_date"></span>".)
+
+<p>Have you made a choice in this situation and gotten to see the outcome, at least partly?</p>
+
+<ul>
+<li><label>
+<input name="eval_made_choice" value="true" type="radio">Yes</label>
+<li><label>
+<input name="eval_made_choice" value="false" type="radio">No</label>
+</ul>
+
+<p>Briefly describe what choice you made.</p>
+
+<textarea id="eval_desc_choice"></textarea>
+
+<p>Briefly describe the outcome. What appeared to happen as a result of your choice?</p>
+
+<textarea id="eval_desc_outcome"></textarea>
+
+<p>Briefly describe how satisfied you are with this outcome. Is it what you hoped for?</p>
+
+<textarea id="eval_desc_satisfaction"></textarea>
+
+[RATING satisfaction
+Rate how satisfied you are with this outcome.
+- Very satisfied
+- Mostly satisfied
+- Somewhat satisfied
+- Mostly not satisfied
+- Not at all satisfied]
+
+[RATING quality
+Given what you knew at the time you made your choice, how good do you think your decision was?
+- A very good decision
+- A good decision
+- A so-so decision
+- A bad decision
+- A very bad decision]
+
+[RATING difficulty
+How difficult did it feel to make the decision?
+- Very hard
+- Hard
+- Intermediate
+- Easy
+- Very easy]
+
+<button id="evaluation_either_done" type="button">Done</button>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__evaluation_vda">
+
+<p>Here's a reminder of the criteria and alternatives you chose in the first session:
+
+<div id="redisplay_subject_scenario" class="problem_example">
+</div>
+
+<p>The result you got from the program was: "<strong><span id="redisplay_vda_result"></span></strong>".
+
+[RATING vda_consistency
+How similar do you feel your choice was to the suggestion produced by the program? (In other words, to what extent do you feel that what you actually did lines up with what the program said you should do?)
+- Very similar
+- Similar
+- Somewhat similar
+- Mostly not similar
+- Not at all similar]
+
+[RATING vda_difficulty
+How difficult did it feel to choose the criteria and alternatives, and to answer the hypothetical questions asked by the program?
+- Very hard
+- Hard
+- Intermediate
+- Easy
+- Very easy]
+
+[RATING vda_helpfulness
+How helpful did the whole procedure feel for making your decision? (By "the whole procedure", I mean choosing the criteria and alternatives and answering the hypothetical questions.)
+- Very helpful
+- Mostly helpful
+- Somewhat helpful
+- Mostly not helpful
+- Not at all helpful]
+
+<button id="evaluation_vda_done" type="button">Done</button>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div class="mode" id="mode__debrief">
+
+[DEBRIEFING]
+
+<p><button id="debrief_done" type="button">Done</button>
 
 </div>
 
