@@ -1,20 +1,41 @@
 #!/bin/env python3
+# Provide the path to a clone of Artiruno core (i.e., the VDA code) as a
+# command-line argument.
+#
+# This program only generates some files. To deploy the task to the
+# server on which it will run, copy 'task.html' and
+# `artiruno_for_pyodide.tar.gz` to the appropriate places on the
+# server.
 
-import sys, re, subprocess, html
+import sys, os, re, runpy, shutil
+from subprocess import run, DEVNULL
+from pathlib import Path
+from html import escape as html_escape
 import iso3166
 
 default_country = 'us'
+submit_url = '/artiruno/submit'
 
-def main(artiruno_webi_path, submit_url):
+def main(artiruno_core_path, test_session_key):
+    artiruno_core_path = Path(artiruno_core_path)
+
+    here = os.getcwd()
+    try:
+        os.chdir(artiruno_core_path)
+        runpy.run_path('pyodide_testing.py', dict(quiet = True))
+    finally:
+        os.chdir(here)
+
     def read(x):
-        with open(x, 'rt') as o:
-            return o.read()
+        return Path(x).read_text()
 
-    task_version = subprocess.check_output(
-        ('git', 'log', '-1', '--format=%H'), encoding = "ASCII").strip()
+    task_version = run(('git', 'log', '-1', '--format=%H'),
+        check = True, capture_output = True,
+        encoding = "ASCII").stdout.strip()
 
-    def artiruno_webi(regex, text = read(artiruno_webi_path)):
-        return re.search(regex, text, flags = re.DOTALL).group(1)
+    webi_text = read(artiruno_core_path / 'webi.html')
+    def artiruno_webi(regex):
+        return re.search(regex, webi_text, flags = re.DOTALL).group(1)
 
     html = (read('task.html')
         .replace('</style>',
@@ -42,12 +63,31 @@ def main(artiruno_webi_path, submit_url):
                 .replace('[SUBMIT_URL]', repr(submit_url))).replace('\\', '\\\\'),
         html, count = 1)
 
-    with open('/tmp/artiruno_pyodide_testing_SNtl1aBcvhoD5PO8upr4/task.html', 'wt') as o:
-        o.write(html)
+    d = Path('/tmp/Arfernet-artiruno-data')
+    d.mkdir(exist_ok = True)
+    (d / 'task.html').write_text(html)
+
+    # Create a test database.
+    (d / 'artiruno.sqlite').unlink(missing_ok = True)
+    run(check = True, stdout = DEVNULL, args = (
+        'sqlite3', d / 'artiruno.sqlite',
+        '.read artiruno.sql',
+        "insert into Subjects values (0, 'fake_test_subject')",
+        *("insert into Sessions values ({}, 'test{}_{}', 0, {}, 2000000000, 0, null)".format(
+                i, i + 1, test_session_key, i + 1)
+            for i in range(3))))
+    sys.argv = [None, d / 'artiruno.sqlite', '10']
+    runpy.run_path('add_conditions.py')
+
+    d = Path('/tmp/Arfernet-exp/artiruno')
+    d.mkdir(parents = True, exist_ok = True)
+    shutil.copy2(
+        '/tmp/artiruno_pyodide_testing_SNtl1aBcvhoD5PO8upr4/artiruno_for_pyodide.tar.gz',
+        d)
 
 def rating_scale(text):
     name, question, *choices = text.splitlines()
-    esc = lambda x: html.escape(x, quote = True)
+    esc = lambda x: html_escape(x, quote = True)
     return '<p>{}\n<ul>\n{}\n</ul>'.format(
        esc(question),
        '\n'.join(
