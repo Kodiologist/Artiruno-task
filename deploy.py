@@ -16,7 +16,7 @@ import iso3166
 default_country = 'us'
 submit_url = '/artiruno/submit'
 
-def main(artiruno_core_path, test_session_key):
+def main(artiruno_core_path):
     artiruno_core_path = Path(artiruno_core_path)
 
     here = os.getcwd()
@@ -73,10 +73,7 @@ def main(artiruno_core_path, test_session_key):
     run(check = True, stdout = DEVNULL, args = (
         'sqlite3', d / 'artiruno.sqlite',
         '.read artiruno.sql',
-        "insert into Subjects values (0, 'fake_test_subject')",
-        *("insert into Sessions values ({}, 'test{}_{}', 0, {}, 2000000000, 0, null)".format(
-                i, i + 1, test_session_key, i + 1)
-            for i in range(3))))
+        "insert into ProlificStudies values (X'deadbeef', 'fake_completion_code')"))
     sys.argv = [None, d / 'artiruno.sqlite', '10']
     runpy.run_path('add_conditions.py')
 

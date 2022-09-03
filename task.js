@@ -107,7 +107,7 @@ let startup = function()
 
     save('task_version', [TASK_VERSION])
     save('user_agent', window.navigator.userAgent)
-    save('session_key', [SESSION_KEY])
+    save('session', [SESSION_NUMBER])
     save('time_started_posixms', Date.now())
     time_started = performance.now()
     let visit = [VISIT_NUMBER]
