@@ -118,9 +118,12 @@ let startup = function()
         {pyodide = pyodide_obj
          save('artiruno_commit',
              pyodide.runPython('artiruno.git_commit'))
-         if (visit === 1)
-           // This is the subject's first go at the task.
+         if (visit === 0)
+           // The subject is here for the screening form.
              mode__consent()
+         else if (visit === 1)
+           // The subject is starting the real task.
+             mode__problem_intro()
          else if (visit === 2)
            // The subject has just entered basic problem information and
            // been assigned a condition.
@@ -145,9 +148,37 @@ let mode__consent = function()
         if (/^\s*i\s*consent\s*$/i.test(E('consent_statement').value))
            {save('time_consented', time_elapsed())
             E('mode__consent').style.display = 'none'
-            mode__problem_intro()}})
+            mode__screener()}})
 
     E('mode__consent').style.display = 'block'
+    scroll_to_top()}
+
+let mode__screener = function()
+   {BC('screener_done', function()
+       {let screener_has_problem = (
+            document.querySelector('input[name="screener_has_problem"][value="true"]').checked
+          ? true
+          : document.querySelector('input[name="screener_has_problem"][value="false"]').checked
+          ? false
+          : null)
+        let screener_problem_description = E('screener_problem_description').value.trim()
+        let validation_error = (
+            screener_has_problem === null
+          ? 'Answer the yes-or-no question.'
+          : screener_has_problem && !screener_problem_description
+          ? 'Fill in the decision description.'
+          : !screener_has_problem && screener_problem_description
+          ? 'You said you had no such decision to make, so the description field should be blank.'
+          : null)
+        if (validation_error !== null)
+           {alert(validation_error)
+            return}
+        save('screener_has_problem', screener_has_problem)
+        save('screener_problem_description', screener_problem_description)
+        E('mode__screener').style.display = 'none'
+        mode__done()})
+
+    E('mode__screener').style.display = 'block'
     scroll_to_top()}
 
 let mode__problem_intro = function()

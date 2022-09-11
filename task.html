@@ -49,11 +49,35 @@
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
+<div class="mode" id="mode__screener">
+
+[DECISION_PROBLEM_INTRO]
+
+<p>Do you have a decision of this kind to make?</p>
+
+<p>
+<ul>
+<li><label>
+<input name="screener_has_problem" value="true" type="radio">Yes</label>
+<li><label>
+<input name="screener_has_problem" value="false" type="radio">No</label>
+</ul>
+
+<p>If yes, briefly describe it. Don't include any personally identifying details.</p>
+
+<textarea id="screener_problem_description"></textarea>
+
+<p><button id="screener_done" type="button">Done</button>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
 <div class="mode" id="mode__problem_intro">
 
 [DECISION_PROBLEM_INTRO]
 
-<p>Briefly describe the decision you'll consider for this study. Don't include any personally identifying details.</p>
+<p>Briefly describe the decision you'll consider for this study. Don't include any personally identifying details. You can use the decision you already described in the screener form, or you can use a different one.</p>
 
 <textarea id="problem_description"></textarea>
 
@@ -241,7 +265,7 @@
 
 <div class="mode" id="mode__evaluation_either">
 
-<p>In the first session of this study, you said you'd consider this decision situation:
+<p>In the previous session of this study, you said you'd consider this decision situation:
 
 <blockquote id="redisplay_problem_description"></blockquote>
 
@@ -300,7 +324,7 @@ How difficult did it feel to make the decision?
 
 <div class="mode" id="mode__evaluation_vda">
 
-<p>Here's a reminder of the criteria and alternatives you chose in the first session:
+<p>Here's a reminder of the criteria and alternatives you chose in the previous session:
 
 <div id="redisplay_subject_scenario" class="problem_example">
 </div>
