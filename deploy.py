@@ -49,7 +49,8 @@ def main(artiruno_core_path, test_session_key):
                x.alpha2.lower(),
                ' selected' if x.alpha2.lower() == default_country else '',
                x.name)
-            for x in iso3166.countries)))
+            for x in iso3166.countries))
+        .replace('[DECISION_PROBLEM_INTRO]', decision_problem_intro))
     html = re.sub(
         r'\[RATING (.+?)\]',
         lambda m: rating_scale(m.group(1)),
@@ -96,6 +97,25 @@ def rating_scale(text):
               len(choices) - i,
               esc(c.removeprefix('- ')))
           for i, c in enumerate(choices)))
+
+decision_problem_intro = '''
+    <p>In this study, I'll ask you to tell me about a decision that you haven't made yet, but you will make soon. The decision should be one you feel is weighty enough to be worth real thought. Ideally it's also a decision such that, by 1 month from today, it's likely that you'll have made the decision and gotten some idea of how well your choice worked out for you. You might consider a decision situation with only two options (such as whether to take or not take a certain action) or a situation with several options.</p>
+
+    <p>Here are a lot of examples of the kind of decision you might use for this study (but, of course, you can still use something different):</p>
+
+    <ul>
+    <li>Deciding whether to quit a job, or deciding which of several job offers to take
+    <li>Deciding whether to start a new business venture, or whether to give up on an existing one
+    <li>Deciding whether to start or drop out of school, or deciding which school to attend
+    <li>Deciding whether to join or leave a religion
+    <li>Deciding who to vote for
+    <li>Deciding whether to come out as LGBT to someone you know
+    <li>Deciding whether to ask somebody on a date, marry, or break up
+    <li>Deciding whether to have a child
+    <li>Deciding where to move, or what home to rent or buy
+    <li>Deciding on expensive purchases, such as a car
+    <li>Medical decisions, such whether to get a vaccine, whether to undergo surgery, or whether to seek help for a mental-health problem
+    </ul>'''
 
 if __name__ == '__main__':
     main(*sys.argv[1:])
