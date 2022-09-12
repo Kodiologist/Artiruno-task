@@ -5,10 +5,12 @@
 '''
 Reminders for the procedure for allowing subjects to do additional sessions:
 - Make a Prolific study for this phase, if there isn't one already.
+  - Insert the study in the database.
 - Increase the Prolific study's subject count, if necessary.
 - Create new sessions in the database for the subjects.
 - Add more conditions to the database (`add_conditions.py`), if necessary.
 - Add the subjects to the Prolific study's whitelist.
+  ("They will automatically be emailed with an invitation to take part within one hour of the study being published." - http://web.archive.org/web/202209/https://researcher-help.prolific.co/hc/en-gb/articles/360015365674 )
 - Ensure the Prolific study is published.
 '''
 
