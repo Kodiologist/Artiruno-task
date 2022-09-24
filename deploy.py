@@ -96,9 +96,9 @@ def rating_scale(text):
           for i, c in enumerate(choices)))
 
 decision_problem_intro = '''
-    <p>In this study, I'll ask you to tell me about a decision that you haven't made yet, but you will make soon. The decision should be one you feel is weighty enough to be worth real thought. Ideally it's also a decision such that, by 1 month from today, it's likely that you'll have made the decision and gotten some idea of how well your choice worked out for you. You might consider a decision situation with only two options (such as whether to take or not take a certain action) or a situation with several options.</p>
+    <p>This study will ask you to describe an important decision that you've thinking about but you haven't made yet. Ideally, it's a decision that you'll have made and seen some consequences of (good or bad) within the next month. The decision could have only two options (like a yes-or-no decision) or more than two options.
 
-    <p>Here are a lot of examples of the kind of decision you might use for this study (but, of course, you can still use something different):</p>
+    <p>Here are lots of example decisions that would work for this study:</p>
 
     <ul>
     <li>Deciding whether to quit a job, or deciding which of several job offers to take
