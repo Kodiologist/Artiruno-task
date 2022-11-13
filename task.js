@@ -12,6 +12,11 @@ let time_started = null
 let buttons_assigned_to_callbacks = new Set()
 let pyodide = null
 
+let placeholder_names =
+   {criterion: 'Criterion name',
+    level: 'Level name',
+    alt: 'Alternative name'}
+
 // ------------------------------------------------------------
 // * Helper functions
 // ------------------------------------------------------------
@@ -210,7 +215,7 @@ let mode__problem_setup = function()
     let new_level = function()
        {this.parentElement.parentElement.insertBefore(
             newe('li',
-                field('Level name', regen),
+                field(placeholder_names.level, regen),
                 button('Delete this level', delete_parent_r)),
             this.parentElement)
         regen()}
@@ -218,7 +223,7 @@ let mode__problem_setup = function()
     BC('new_criterion', function()
        {E('criteria_entry').insertBefore(
             newe('li',
-                field('Criterion name', regen),
+                field(placeholder_names.criterion, regen),
                 button('Delete this criterion', delete_parent_r),
                 newe('ol',
                     newe('li', button('Add a level', new_level)))),
@@ -254,7 +259,7 @@ let mode__problem_setup = function()
     BC('new_alt', function()
        {E('alt_entry').insertBefore(
             newe('li',
-                field('Alternative name'),
+                field(placeholder_names.alt),
                 button('Delete this alternative', delete_parent),
                 newe('ul')),
             E('new_alt_li'))
@@ -272,12 +277,18 @@ let mode__problem_setup = function()
         let validation_error = (
             alts.length < 2
           ? 'You need at least two alternatives.'
+          : alts.map(([name,]) => name).includes(placeholder_names.alt)
+          ? 'Choose a name for each alternative.'
           : any_dupes(alts.map(([name,]) => name))
           ? 'No two alternatives can have the same name.'
           : criteria.length < 2
           ? 'You need at least two criteria.'
+          : criteria.map(([name,]) => name).includes(placeholder_names.criterion)
+          ? 'Choose a name for each criterion.'
           : any_dupes(criteria.map(([name,]) => name))
           ? 'No two criteria can have the same name.'
+          : criteria.some(([, levels]) => levels.includes(placeholder_names.level))
+          ? 'Choose a name for each level of each criterion.'
           : criteria.some(([, levels]) => levels.length < 2)
           ? 'Each criterion needs at least two levels.'
           : criteria.some(([, levels]) => any_dupes(levels))
