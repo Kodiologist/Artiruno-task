@@ -270,7 +270,11 @@ let mode__problem_setup = function()
        {let criteria = digest_criteria()
         let alts = digest_alts()
         let validation_error = (
-            criteria.length < 2
+            alts.length < 2
+          ? 'You need at least two alternatives.'
+          : any_dupes(alts.map(([name,]) => name))
+          ? 'No two alternatives can have the same name.'
+          : criteria.length < 2
           ? 'You need at least two criteria.'
           : any_dupes(criteria.map(([name,]) => name))
           ? 'No two criteria can have the same name.'
@@ -278,10 +282,6 @@ let mode__problem_setup = function()
           ? 'Each criterion needs at least two levels.'
           : criteria.some(([, levels]) => any_dupes(levels))
           ? 'No two levels for a single criterion can have the same name.'
-          : alts.length < 2
-          ? 'You need at least two alternatives.'
-          : any_dupes(alts.map(([name,]) => name))
-          ? 'No two alternatives can have the same name.'
           : any_dupes(alts.map(([, values]) => JSON.stringify(values)))
           ? 'No two alternatives can have the same levels on all criteria.'
           : null)
