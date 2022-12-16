@@ -24,6 +24,14 @@ let placeholder_names =
 let butlast = x =>
     Array.from(x).slice(0, -1)
 
+let shuffle = function(array)
+  // https://stackoverflow.com/a/12646864
+   {for (let i = array.length - 1 ; i > 0 ; --i )
+       {let j = Math.floor(Math.random() * (i + 1))
+        let temp = array[i]
+        array[i] = array[j]
+        array[j] = temp}}
+
 let E = x =>
     document.getElementById(x)
 
@@ -304,10 +312,61 @@ let mode__problem_setup = function()
         if (!saved.hasOwnProperty('time_first_problem_setup'))
             save('time_first_problem_setup', time_elapsed())
         E('mode__problem_setup').style.display = 'none'
-        mode__vda()})
+        mode__check_level_order()})
 
     E('mode__problem_setup').style.display = 'block'
     scroll_to_top()}
+
+let already_checked = new Set()
+let checking = null
+let to_check = []
+
+let mode__check_level_order = function()
+   {to_check.length = 0
+    // Put all pairs of adjacent criterion levels in `to_check`.
+    for (let criterion of saved.criteria)
+        for (let i = 0 ; i < criterion[1].length - 1 ; ++i)
+           {let levels = [criterion[1][i], criterion[1][i + 1]]
+            levels.sort()
+            var x = [criterion, levels]
+            if (!already_checked.has(JSON.stringify(x)))
+                to_check.push(x)}
+    shuffle(to_check)
+    checking = null
+
+    let next_pair = function()
+       {if (!to_check.length)
+          // All pairs have been checked. Continue with the task.
+           {E('mode__check_level_order').style.display = 'none'
+            mode__vda()
+            return}
+
+        checking = to_check.shift()
+        let [criterion, levels] = checking
+        for (let i of [0, 1])
+            E('check_level_list').children[i].lastChild.textContent =
+                criterion[0] + ': ' + levels[i]
+
+        E('mode__check_level_order').style.display = 'block'}
+
+    let made_choice = function()
+       {let [criterion, levels] = checking
+        if ((this.textContent === 'B') === (
+                criterion[1].indexOf(levels[0]) <
+                    criterion[1].indexOf(levels[1])))
+          // The subject's choice was consistent with their earlier
+          // criteria definitions. Continue.
+           {already_checked.add(JSON.stringify(checking))
+            next_pair()}
+        else
+           {alert("That selection isn't consistent with your earlier criterion definition. Remember, worse criterion levels should be listed first (i.e., higher in the list). Edit the levels as necessary.")
+            E('mode__check_level_order').style.display = 'none'
+            mode__problem_setup()}}
+
+    BC('check_level_list_a', made_choice)
+    BC('check_level_list_b', made_choice)
+
+    next_pair()}
 
 let mode__vda = function()
    {BC('return_to_problem_setup', async function()
