@@ -246,13 +246,6 @@ let mode__problem_setup = function()
 
     let regen = function(event, alt)
        {let criteria = digest_criteria()
-        // Refresh the best-possible and worst-possible option displays.
-        for (let ix of [0, -1])
-           {E('possible-option-' + ix).innerHTML = ''
-            E('possible-option-' + ix).append(...criteria.map(
-                ([name, levels]) =>
-                    newe('li', name + ': ' +
-                        (levels.length ? levels.slice(ix)[0] : ''))))}
         // Reset the criterion <select> elements for each alternative
         // (or only `alt`, if given).
         for (let e of butlast(E('alt_entry').children))
