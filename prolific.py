@@ -36,7 +36,7 @@ studies = dict(
     scenario = dict(
         name = 'Real-Life Decision-Making',
         internal_name = 'artiruno-scenario',
-        description = 'Answer questions about your decision situation, plus demographic questions.'
+        description = 'Solve a puzzle, then answer questions about your decision situation, plus demographic questions.'
             + platform_info,
         estimated_completion_minutes = 15,
         reward_cents = 300,

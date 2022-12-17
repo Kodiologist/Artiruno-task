@@ -7,6 +7,7 @@ window.onload = function() {
 
 let saved = {}
 let previous_visit_data = [PREVIOUS_VISIT_DATA]
+let prolific_pid_hex = [PROLIFIC_PID_HEX]
 let experimental_condition
 let time_started = null
 let buttons_assigned_to_callbacks = new Set()
@@ -136,7 +137,7 @@ let startup = function()
              mode__consent()
          else if (visit === 1)
            // The subject is starting the real task.
-             mode__problem_intro()
+             mode__puzzle()
          else if (visit === 2)
            // The subject has just entered basic problem information and
            // been assigned a condition.
@@ -192,6 +193,60 @@ let mode__screener = function()
         mode__done()})
 
     E('mode__screener').style.display = 'block'
+    scroll_to_top()}
+
+let puzzle_responses = []
+
+let mode__puzzle = function()
+  // Make the subject complete a puzzle. They can only continue when
+  // they get it right. The point is to encourage subjects who would
+  // drop out if they were assigned to the VDA condition to drop out
+  // earlier, before condition assignment.
+   {let items = ['feather', 'ball', 'cup', 'hat']
+    let possible_answers = [
+      // Consider all permutations of {0, 1, 2, 3} except the ones
+      // that begin with 0, so the answer doesn't resemble the problem
+      // setup too much.
+        [1, 0, 2, 3], [1, 0, 3, 2], [1, 2, 0, 3], [1, 2, 3, 0], [1, 3, 0, 2], [1, 3, 2, 0], [2, 0, 1, 3], [2, 0, 3, 1], [2, 1, 0, 3], [2, 1, 3, 0], [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 0, 2, 1], [3, 1, 0, 2], [3, 1, 2, 0], [3, 2, 0, 1], [3, 2, 1, 0]]
+    let clues = [[2, 3], [1, 0], [3, 1], [2, 1]]
+
+    let answer = possible_answers[
+      // Choose the correct answer pseudo-randomly using the subject's
+      // PID.
+        prolific_pid_hex.split('').reduce(
+            (a, c) => a + parseInt(c, 16), 0) %
+        possible_answers.length]
+    let answer_str = answer.join('')
+    save('puzzle_answer', answer_str)
+
+    E('puzzle_objects_list').textContent =
+        butlast(items).map(x => 'a ' + x).join(', ') +
+        ', and a ' + items[items.length - 1]
+    E('puzzle_objects_numbers').textContent =
+        butlast(items).map((x, i) =>
+            'the ' + x + ' as ' + i.toString()).join(', ') +
+        ', and ' +
+            'the ' + items[items.length - 1] + ' as ' + (items.length - 1).toString()
+
+    for (let clue of clues)
+        E('puzzle_clues').append(newe('li',
+            'The ' + items[answer[clue[0]]] +
+            ' is to the ' + (clue[0] < clue[1] ? 'left' : 'right') +
+            ' of the ' + items[answer[clue[1]]] + '.'))
+
+    BC('puzzle_done', function()
+       {let response = E('puzzle_response').value.trim()
+        puzzle_responses.push(response)
+        let m = response.match(/[0-9]/g)
+        if (m === null || m.join('') !== answer_str)
+           {alert("That's not the right answer (or, you formatted your response incorrectly). Try again.")
+            return}
+        save('time_puzzle', time_elapsed())
+        save('puzzle_responses', puzzle_responses)
+        E('mode__puzzle').style.display = 'none'
+        mode__problem_intro()})
+
+    E('mode__puzzle').style.display = 'block'
     scroll_to_top()}
 
 let mode__problem_intro = function()
