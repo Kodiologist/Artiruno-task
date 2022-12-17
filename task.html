@@ -221,6 +221,24 @@ strong.nb
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
+<div class="mode" id="mode__check_dominance">
+
+<p><strong>Warning:</strong> According to your definitions, the alternative <b class="dominator"></b> dominates the others. This means that on all criteria, it's at least as good as all your other alternatives. So, you don't have much of a decision to make: the dominating alternative is your best option by definition.</p>
+
+<p>This situation usually arises by mistake. For example, you may've forgotten to include a criterion that makes the other alternatives more appealing than <b class="dominator"></b> in some way.</p>
+
+<p>You can go back and edit your criteria and alternatives, or you can continue if you feel that <b class="dominator"></b> dominating accurately represents your situation.</p>
+
+<p>
+<button id="return_to_problem_setup_1" type="button">Edit criteria and alternatives</button>
+<br>
+<button id="check_dominance_done" type="button">Continue with these criteria and alternatives</button>
+</p>
+
+</div>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
 <div class="mode" id="mode__vda">
 
 <p>Now that you've described your decision situation in terms of criteria and alternatives, my program will try to help you pick the best alternative. It can't always provide useful information, but it will do its best. The idea is to ask you to choose between some hypothetical options that are hopefully easier to judge than the real alternatives. Then, the program will do some math to infer what should be the best alternative, given some basic assumptions about how preferences work. Ultimately, you don't have to go with the alternative that the program says you should; it's just a recommendation.</p>
@@ -233,7 +251,7 @@ strong.nb
 </div>
 
 <div style="margin-top: 1em">
-<button id="return_to_problem_setup" type="button">Edit criteria and alternatives</button>
+<button id="return_to_problem_setup_2" type="button">Edit criteria and alternatives</button>
 </div>
 
 <div id='start-button-parent'>

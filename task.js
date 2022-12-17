@@ -379,7 +379,7 @@ modes.check_level_order = function()
     let next_pair = function()
        {if (!to_check.length)
           // All pairs have been checked. Continue with the task.
-           {mode('vda')
+           {mode('check_dominance')
             return}
 
         checking = to_check.shift()
@@ -406,8 +406,38 @@ modes.check_level_order = function()
 
     next_pair()}
 
+modes.check_dominance = function()
+   {// Look for an alt that dominates all others. We need not check
+    // for non-strict dominance (i.e., equality) because alts were
+    // required to be distinct in an earlier step.
+    let dominator = null
+    let cs = saved.criteria
+    CANDIDATE: for (let candidate of saved.alts)
+       {for (let other of saved.alts)
+           {if (other === candidate)
+                continue
+            for (let ci = 0 ; ci < cs.length ; ++ci)
+                if (cs[ci][1].indexOf(other[1][ci]) >
+                        cs[ci][1].indexOf(candidate[1][ci]))
+                    continue CANDIDATE}
+        dominator = candidate
+        break CANDIDATE}
+
+    if (!dominator)
+       {save('dominance', false)
+        return mode('vda')}
+
+    for (let e of document.getElementsByClassName('dominator'))
+        e.textContent = dominator[0]
+    BC('return_to_problem_setup_1', function()
+       {mode('problem_setup')})
+    BC('check_dominance_done', function()
+      // Skip the VDA proper, since the situation is trivial.
+       {save('dominance', true)
+        mode('demog')})}
+
 modes.vda = function()
-   {BC('return_to_problem_setup', async function()
+   {BC('return_to_problem_setup_2', async function()
        {await pyodide.runPythonAsync('artiruno.stop_web_vda()')
         mode('problem_setup')})
 
