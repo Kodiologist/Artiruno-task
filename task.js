@@ -10,6 +10,7 @@ let previous_visit_data = [PREVIOUS_VISIT_DATA]
 let prolific_pid_hex = [PROLIFIC_PID_HEX]
 let experimental_condition
 let time_started = null
+let current_mode = null
 let buttons_assigned_to_callbacks = new Set()
 let pyodide = null
 
@@ -74,8 +75,20 @@ let save = function(name, val)
     saved[name] = val
     E(id).value = JSON.stringify(val)}
 
-let scroll_to_top = function()
-   {document.documentElement.scrollTop = 0}
+let modes = {}
+
+let mode = function(new_mode)
+  // Change to the given mode.
+   {if (current_mode)
+        E('mode__' + current_mode).style.display = 'none'
+    current_mode = new_mode
+    modes[new_mode]()
+    if (current_mode !== new_mode)
+      // This function was called inside `modes[new_mode]` before it
+      // returned, which means we're essentially skipping `new_mode`.
+        return
+    E('mode__' + new_mode).style.display = 'block'
+    document.documentElement.scrollTop = 0}
 
 let time_elapsed = () =>
     performance.now() - time_started
@@ -134,21 +147,21 @@ let startup = function()
              pyodide.runPython('artiruno.git_commit'))
          if (visit === 0)
            // The subject is here for the screening form.
-             mode__consent()
+             mode('consent')
          else if (visit === 1)
            // The subject is starting the real task.
-             mode__puzzle()
+             mode('puzzle')
          else if (visit === 2)
            // The subject has just entered basic problem information and
            // been assigned a condition.
             {if (experimental_condition === 'vda')
-                 mode__problem_setup()
+                 mode('problem_setup')
              else
-                 mode__demog()}
+                 mode('demog')}
          else if (visit === 3)
            // The subject has returned after a month for the follow-up
            // session.
-              mode__evaluation_either()
+              mode('evaluation_either')
          else
               throw 'Illegal visit code.'})}
 
@@ -156,18 +169,14 @@ let startup = function()
 // * Modes
 // ------------------------------------------------------------
 
-let mode__consent = function()
+modes.consent = function()
    {E('consent_form').addEventListener('submit', function(e)
        {e.preventDefault()
         if (/^\s*i\s*consent\s*$/i.test(E('consent_statement').value))
            {save('time_consented', time_elapsed())
-            E('mode__consent').style.display = 'none'
-            mode__screener()}})
+            mode('screener')}})}
 
-    E('mode__consent').style.display = 'block'
-    scroll_to_top()}
-
-let mode__screener = function()
+modes.screener = function()
    {BC('screener_done', function()
        {let screener_has_problem = (
             document.querySelector('input[name="screener_has_problem"][value="true"]').checked
@@ -189,15 +198,11 @@ let mode__screener = function()
             return}
         save('screener_has_problem', screener_has_problem)
         save('screener_problem_description', screener_problem_description)
-        E('mode__screener').style.display = 'none'
-        mode__done()})
-
-    E('mode__screener').style.display = 'block'
-    scroll_to_top()}
+        mode('done')})}
 
 let puzzle_responses = []
 
-let mode__puzzle = function()
+modes.puzzle = function()
   // Make the subject complete a puzzle. They can only continue when
   // they get it right. The point is to encourage subjects who would
   // drop out if they were assigned to the VDA condition to drop out
@@ -243,13 +248,9 @@ let mode__puzzle = function()
             return}
         save('time_puzzle', time_elapsed())
         save('puzzle_responses', puzzle_responses)
-        E('mode__puzzle').style.display = 'none'
-        mode__problem_intro()})
+        mode('problem_intro')})}
 
-    E('mode__puzzle').style.display = 'block'
-    scroll_to_top()}
-
-let mode__problem_intro = function()
+modes.problem_intro = function()
    {BC('problem_intro_done', function()
        {let validation_error = (
             !E('problem_description').value.trim()
@@ -263,12 +264,9 @@ let mode__problem_intro = function()
         save('problem_description', E('problem_description').value.trim())
         save('expected_resolution_date', E('expected_resolution_date').value.trim())
         save('time_problem_intro', time_elapsed())
-        E('submission_form').submit()})
+        E('submission_form').submit()})}
 
-    E('mode__problem_intro').style.display = 'block'
-    scroll_to_top()}
-
-let mode__problem_setup = function()
+modes.problem_setup = function()
    {let delete_parent = function()
        {this.parentElement.remove()}
     let delete_parent_r = function()
@@ -359,17 +357,13 @@ let mode__problem_setup = function()
         save('alts', alts)
         if (!saved.hasOwnProperty('time_first_problem_setup'))
             save('time_first_problem_setup', time_elapsed())
-        E('mode__problem_setup').style.display = 'none'
-        mode__check_level_order()})
-
-    E('mode__problem_setup').style.display = 'block'
-    scroll_to_top()}
+        mode('check_level_order')})}
 
 let already_checked = new Set()
 let checking = null
 let to_check = []
 
-let mode__check_level_order = function()
+modes.check_level_order = function()
    {to_check.length = 0
     // Put all pairs of adjacent criterion levels in `to_check`.
     for (let criterion of saved.criteria)
@@ -385,17 +379,14 @@ let mode__check_level_order = function()
     let next_pair = function()
        {if (!to_check.length)
           // All pairs have been checked. Continue with the task.
-           {E('mode__check_level_order').style.display = 'none'
-            mode__vda()
+           {mode('vda')
             return}
 
         checking = to_check.shift()
         let [criterion, levels] = checking
         for (let i of [0, 1])
             E('check_level_list').children[i].lastChild.textContent =
-                criterion[0] + ': ' + levels[i]
-
-        E('mode__check_level_order').style.display = 'block'}
+                criterion[0] + ': ' + levels[i]}
 
     let made_choice = function()
        {let [criterion, levels] = checking
@@ -408,19 +399,17 @@ let mode__check_level_order = function()
             next_pair()}
         else
            {alert("That selection isn't consistent with your earlier criterion definition. Remember, worse criterion levels should be listed first (i.e., higher in the list). Edit the levels as necessary.")
-            E('mode__check_level_order').style.display = 'none'
-            mode__problem_setup()}}
+            mode('problem_setup')}}
 
     BC('check_level_list_a', made_choice)
     BC('check_level_list_b', made_choice)
 
     next_pair()}
 
-let mode__vda = function()
+modes.vda = function()
    {BC('return_to_problem_setup', async function()
        {await pyodide.runPythonAsync('artiruno.stop_web_vda()')
-        E('mode__vda').style.display = 'none'
-        mode__problem_setup()})
+        mode('problem_setup')})
 
     show_scenario('display_subject_scenario', saved.criteria, saved.alts)
 
@@ -431,13 +420,9 @@ let mode__vda = function()
                 questions.toJs({dict_converter: Object.fromEntries}))
             save('vda_result', result)
             E('dm').appendChild(button('Continue', function()
-               {E('mode__vda').style.display = 'none'
-                mode__demog()}))})
+               {mode('demog')}))})}
 
-    E('mode__vda').style.display = 'block'
-    scroll_to_top()}
-
-let mode__demog = function()
+modes.demog = function()
    {BC('demog_done', function()
        {let age = E('age').value.trim()
         age = /^\d+$/.test(age) ? Number(age) : null
@@ -465,29 +450,21 @@ let mode__demog = function()
         save('age', age)
         save('gender', gender)
         save('race', race)
-        E('mode__demog').style.display = 'none'
-        mode__done()})
+        mode('done')})}
 
-    E('mode__demog').style.display = 'block'
-    scroll_to_top()}
-
-let mode__evaluation_either = function()
+modes.evaluation_either = function()
    {for (let k of ['problem_description', 'expected_resolution_date'])
         E('redisplay_' + k).textContent = JSON.parse(previous_visit_data[k])
 
     BC('evaluation_either_done', function()
        {if (!digest_evaluation_inputs('mode__evaluation_either'))
             return
-        E('mode__evaluation_either').style.display = 'none'
         if (experimental_condition === 'vda')
-            mode__evaluation_vda()
+            mode('evaluation_vda')
         else
-            mode__debrief()})
+            mode('debrief')})}
 
-    E('mode__evaluation_either').style.display = 'block'
-    scroll_to_top()}
-
-let mode__evaluation_vda = function()
+modes.evaluation_vda = function()
    {show_scenario('redisplay_subject_scenario',
         JSON.parse(previous_visit_data.criteria),
         JSON.parse(previous_visit_data.alts))
@@ -497,31 +474,20 @@ let mode__evaluation_vda = function()
     BC('evaluation_vda_done', function()
        {if (!digest_evaluation_inputs('mode__evaluation_vda'))
             return
-        E('mode__evaluation_vda').style.display = 'none'
-        mode__debrief()})
+        mode('debrief')})}
 
-    E('mode__evaluation_vda').style.display = 'block'
-    scroll_to_top()}
-
-let mode__debrief = function()
+modes.debrief = function()
    {save('time_started_debrief', time_elapsed())
 
     BC('debrief_done', function()
-       {E('mode__debrief').style.display = 'none'
-        mode__done()})
+       {mode('done')})}
 
-    E('mode__debrief').style.display = 'block'
-    scroll_to_top()}
-
-let mode__done = function()
+modes.done = function()
    {save('time_done', time_elapsed())
 
     BC('done_done', function()
        {save('comments', E('comments').value.trim())
-        E('submission_form').submit()})
-
-    E('mode__done').style.display = 'block'
-    scroll_to_top()}
+        E('submission_form').submit()})}
 
 startup()
 
