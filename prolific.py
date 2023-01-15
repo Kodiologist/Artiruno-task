@@ -21,7 +21,7 @@ import requests
 
 upcharge = 1/3
 
-platform_info = ' (The task uses some heavy JavaScript and can be particularly slow on phones and tablets, so I recommend using a desktop or laptop computer.)'
+platform_info = ' (The task can be particularly slow on phones and tablets, since it involves some heavy WebAssembly, so I recommend you use a desktop or laptop computer.)'
 
 studies = dict(
     screening = dict(
