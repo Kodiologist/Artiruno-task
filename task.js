@@ -454,8 +454,10 @@ modes.vda = function()
 
 modes.demog = function()
    {BC('demog_done', function()
-       {let age = E('age').value.trim()
-        age = /^\d+$/.test(age) ? Number(age) : null
+       {let integer_item = function(id)
+           {let x = E(id).value.trim()
+            return /^\d+$/.test(x) ? Number(x) : null}
+        let age = integer_item('age')
         let gender = document.querySelector('input[name="gender"]:checked')
         if (gender !== null)
            {gender = gender.value
@@ -465,6 +467,7 @@ modes.demog = function()
             document.querySelectorAll('input[id^=race_]')).map(x =>
                [x.id.replace(/^race_/, ''),
                 x.id === 'race_other' ? x.value.trim() : x.checked])
+        let education_years = integer_item('education_years')
         let validation_error = (
             age === null
           ? 'Provide your age in years as a whole number.'
@@ -472,6 +475,8 @@ modes.demog = function()
           ? 'Provide your gender.'
           : !race.some(([, value]) => value)
           ? 'Provide your race.'
+          : education_years === null
+          ? 'Provide your years of education as a whole number.'
           : null)
         if (validation_error !== null)
            {alert(validation_error)
@@ -480,6 +485,7 @@ modes.demog = function()
         save('age', age)
         save('gender', gender)
         save('race', race)
+        save('education_years', education_years)
         mode('done')})}
 
 modes.evaluation_either = function()
