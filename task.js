@@ -135,7 +135,7 @@ let startup = function()
     save('time_started_posixms', Date.now())
     time_started = performance.now()
     let visit = [VISIT_NUMBER]
-    experimental_condition = [EXPERIMENTAL_CONDITION]
+    experimental_condition = 'vda'
 
     load_vda(function(pyodide_obj)
       // Defined by Artiruno.
