@@ -12,11 +12,6 @@
 #instructions
    {text-align: center;}
 
-strong.nb
-   {background: #cfc;
-    color: black;
-    padding: .1em;}
-
 .problem_example, blockquote
    {border: thin solid black;
     padding: 5px;
@@ -131,7 +126,7 @@ strong.nb
 
 <p>The idea is to represent each alternative with a set of "criteria", or features that make the alternative attractive or unattractive or you. For example, if you were deciding which job to take, a criterion could be <b>Salary</b>. I suggest using 2 to 7 criteria.</p>
 
-<p>For each criterion, you'll set its possible values, or "levels". Levels are ordered with the <strong class="nb">worst first</strong> and the <strong class="nb">best last</strong>. So you might give <b>Salary</b> the levels <b>Low</b>, <b>Medium</b>, and <b>High</b>. Or you can use numbers as levels. The important thing is that level differences are big enough to matter: if two jobs have different salaries in dollars, but the difference is too small to affect your decision at all, you should use the same level of <b>Salary</b> for both. Level differences need not be equally important: you might care about <b>Salary</b> going from <b>Low</b> to <b>Medium</b> much more than from <b>Medium</b> to <b>High</b>.
+<p>For each criterion, you'll set its possible values, or "levels". Levels are ordered with the worst first and the best last. So you might give <b>Salary</b> the levels <b>Low</b>, <b>Medium</b>, and <b>High</b>. Or you can use numbers as levels. The important thing is that level differences are big enough to matter: if two jobs have different salaries in dollars, but the difference is too small to affect your decision at all, you should use the same level of <b>Salary</b> for both. Level differences need not be equally important: you might care about <b>Salary</b> going from <b>Low</b> to <b>Medium</b> much more than from <b>Medium</b> to <b>High</b>.
 
 <p>Here's a complete example of a situation in which somebody is deciding between job offers:</p>
 
@@ -192,14 +187,14 @@ strong.nb
 
 <p>Make sure to only include alternatives you could actually take, not just options you wish that you had. After all, the point of this exercise is to help you make a real choice. On the other hand, feel free to use criteria that involve best guesses, like how much you'll learn in a training program.</p>
 
-<p>Enter the names of the alternatives you'd like to consider:</p>
+<p>Enter the names of the alternatives you'd like to consider.</p>
 
 <ul id="alt_entry">
 <li id="new_alt_li">
 <button id="new_alt" type="button">Add an alternative</button></li>
 </ul>
 
-<p>Enter the criteria you want to rate the alternatives on:</p>
+<p>Enter the criteria you want to rate the alternatives on. Order the levels of each criterion with <span class="criterion_level_note criterion_level_worst">the worst first</span> and <span class="criterion_level_note criterion_level_best">the best last</span>.</p>
 
 <ul id="criteria_entry">
 <li id="new_criterion_li">
