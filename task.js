@@ -48,6 +48,11 @@ let newe = function(x, ...kids)
     x.append(...kids)
     return x}
 
+let newe_c = function(x, className, ...kids)
+   {x = newe(x, ...kids)
+    x.className = className
+    return x}
+
 let any_dupes = x =>
     (new Set(x)).size !== x.length
 
@@ -276,6 +281,7 @@ modes.problem_setup = function()
     let new_level = function()
        {this.parentElement.parentElement.insertBefore(
             newe('li',
+                newe_c('span', 'criterion_level_note'),
                 field(placeholder_names.level, regen),
                 button('Delete this level', delete_parent_r)),
             this.parentElement)
@@ -295,12 +301,27 @@ modes.problem_setup = function()
         butlast(E('criteria_entry').children).map(c =>
            [c.firstChild.value.trim(),
             butlast(c.lastChild.children).map(v =>
-                v.firstChild.value.trim())])
+                v.children[1].value.trim())])
 
     let regen = function(event, alt)
-       {let criteria = digest_criteria()
+       {// Mark the best and worst levels of each criterion, so long as
+        // there's at least two.
+        for (let criterion of butlast(E('criteria_entry').children))
+           {let levels = butlast(criterion.getElementsByTagName('li'))
+            for (let level of levels)
+               {console.log(level)
+                let note = level.firstChild
+                note.textContent = ''
+                note.className = 'criterion_level_note'
+                if (level.previousSibling === null)
+                   {note.textContent = '(worst)'
+                    note.classList.add('criterion_level_worst')}
+                else if (level.nextSibling.nextSibling === null)
+                   {note.textContent = '(best)'
+                    note.classList.add('criterion_level_best')}}}
         // Reset the criterion <select> elements for each alternative
         // (or only `alt`, if given).
+        let criteria = digest_criteria()
         for (let e of butlast(E('alt_entry').children))
            {if (typeof alt !== 'undefined' && e !== alt)
                 continue
