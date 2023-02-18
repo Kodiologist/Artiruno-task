@@ -151,10 +151,9 @@ let startup = function()
          else if (visit === 2)
            // The subject has just entered basic problem information and
            // been assigned a condition.
-            {if (experimental_condition === 'vda')
-                 mode('problem_setup')
-             else
-                 mode('demog')}
+             mode(experimental_condition === 'vda'
+               ? 'problem_setup'
+               : 'demog')
          else if (visit === 3)
            // The subject has returned after a month for the follow-up
            // session.
