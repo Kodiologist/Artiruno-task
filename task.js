@@ -295,8 +295,8 @@ modes.problem_setup = function()
                 v.children[1].value.trim())])
 
     let regen = function(event, alt)
-       {// Mark the best and worst levels of each criterion, so long as
-        // there's at least two.
+       {// Mark the best and worst levels of each criterion.
+        // If there's only one level, mark it as the worst.
         for (let criterion of butlast(E('criteria_entry').children))
            {let levels = butlast(criterion.getElementsByTagName('li'))
             for (let level of levels)
