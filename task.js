@@ -272,7 +272,7 @@ modes.problem_setup = function()
     let new_level = function()
        {this.parentElement.parentElement.insertBefore(
             newe('li',
-                newe_c('span', 'criterion_level_note'),
+                newe('span'),
                 field(placeholder_names.level, regen),
                 button('Delete this level', delete_parent_r)),
             this.parentElement)
@@ -284,7 +284,8 @@ modes.problem_setup = function()
                 field(placeholder_names.criterion, regen),
                 button('Delete this criterion', delete_parent_r),
                 newe('ol',
-                    newe('li', button('Add a level', new_level)))),
+                    newe_c('li', 'new_level_li',
+                        button('Add a level', new_level)))),
             E('new_criterion_li'))
         regen()})
 
@@ -295,21 +296,7 @@ modes.problem_setup = function()
                 v.children[1].value.trim())])
 
     let regen = function(event, alt)
-       {// Mark the best and worst levels of each criterion.
-        // If there's only one level, mark it as the worst.
-        for (let criterion of butlast(E('criteria_entry').children))
-           {let levels = butlast(criterion.getElementsByTagName('li'))
-            for (let level of levels)
-               {console.log(level)
-                let note = level.firstChild
-                note.textContent = ''
-                note.className = 'criterion_level_note'
-                if (level.previousSibling === null)
-                   {note.textContent = '(worst)'
-                    note.classList.add('criterion_level_worst')}
-                else if (level.nextSibling.nextSibling === null)
-                   {note.textContent = '(best)'
-                    note.classList.add('criterion_level_best')}}}
+       {mark_levels()
         // Reset the criterion <select> elements for each alternative
         // (or only `alt`, if given).
         let criteria = digest_criteria()
@@ -321,6 +308,32 @@ modes.problem_setup = function()
                 newe('li', name + ': ',
                     newe('select', ...levels.map(v =>
                         newe('option', v))))))}}
+
+    let mark_levels = function()
+      // Mark the best and worst levels of each criterion.
+      // If there's only one level, mark it as the worst.
+       {for (let criterion_list of E('mode__problem_setup')
+                .getElementsByClassName('criteria'))
+            for (let criterion of criterion_list.children)
+                {if (criterion.id == 'new_criterion_li')
+                     continue
+                for (let level of criterion.getElementsByTagName('li'))
+                   {if (level.className === 'new_level_li')
+                        continue
+                    if (level.firstChild.tagName !== 'SPAN')
+                        level.insertBefore(newe('span'), level.firstChild)
+                    let note = level.firstChild
+                    note.textContent = ''
+                    note.className = 'note'
+                    if (level.previousSibling === null)
+                       {note.textContent = '(worst)'
+                        note.classList.add('worst')}
+                    else if (level.nextSibling === null ||
+                            level.nextSibling.className === 'new_level_li')
+                       {note.textContent = '(best)'
+                        note.classList.add('best')}}}}
+
+    mark_levels()
 
     BC('new_alt', function()
        {E('alt_entry').insertBefore(
