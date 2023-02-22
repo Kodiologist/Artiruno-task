@@ -38,8 +38,8 @@ studies = dict(
         internal_name = 'artiruno-scenario',
         description = 'Solve a puzzle, then answer questions about your decision situation, plus demographic questions.'
             + platform_info,
-        estimated_completion_minutes = 15,
-        reward_cents = 300,
+        estimated_completion_minutes = 20,
+        reward_cents = 400,
         estimated_total_n = 80),
     followup = dict(
         name = 'Real-Life Decision-Making (follow-up)',
