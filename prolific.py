@@ -100,6 +100,8 @@ def make_study(
         '(prolific_study, completion_code) ' +
         f'values (X{study["id"]!r}, {study["completion_code"]!r})')
 
+def get_demographics(study_id):
+    return api('GET', f'studies/{study_id}/export').text
 
 def main(mode, args):
     if mode == 'make-study':
@@ -111,6 +113,10 @@ def main(mode, args):
             study['estimated_total_n'] * study['reward_cents'] *
                 (1 + upcharge)
             for study in studies.values())))
+
+    elif mode == 'get-demog':
+        study_id, = args
+        print(get_demographics(study_id))
 
     else:
         raise ValueError()
