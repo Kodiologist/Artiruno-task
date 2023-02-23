@@ -19,6 +19,7 @@ from pathlib import Path
 
 import requests
 
+token_path = Path('/tmp/prolific-api-token')
 upcharge = 1/3
 
 platform_info = ' (The task can be particularly slow on phones and tablets, since it involves some heavy WebAssembly, so I recommend you use a desktop or laptop computer.)'
@@ -53,12 +54,14 @@ studies = dict(
 def api(verb, endpoint, **kwargs):
     r = requests.request(verb,
         'https://api.prolific.co/api/v1/' + endpoint,
-        headers = dict(Authorization = 'Token ' + token),
+        headers = dict(Authorization = 'Token ' +
+            token_path.read_text().strip()),
         **kwargs)
     r.raise_for_status()
     return r
 
 def make_study(
+        task_url,
         name, internal_name, description,
         estimated_completion_minutes, reward_cents,
         english_only = False, estimated_total_n = 'IGNORED'):
@@ -97,13 +100,11 @@ def make_study(
         '(prolific_study, completion_code) ' +
         f'values (X{study["id"]!r}, {study["completion_code"]!r})')
 
-if __name__ == '__main__':
-    mode = sys.argv[1]
 
+def main(mode, args):
     if mode == 'make-study':
-        phase, task_url = sys.argv[2:]
-        token = Path('/tmp/prolific-api-token').read_text().strip()
-        make_study(**studies[phase])
+        phase, task_url = args
+        make_study(task_url, **studies[phase])
 
     elif mode == 'estimate-cost':
         print(.01 * round(sum(
@@ -113,3 +114,6 @@ if __name__ == '__main__':
 
     else:
         raise ValueError()
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2:])
