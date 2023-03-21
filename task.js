@@ -94,7 +94,7 @@ let show_scenario = function(id, criteria, alts)
    {E(id).innerHTML = ''
     E(id).append(
         newe('div', 'Criteria'),
-        newe('ul', ...criteria.map(([name, levels]) =>
+        newe_c('ul', 'criteria', ...criteria.map(([name, levels]) =>
             newe('li', name, newe('ol', ...levels.map(
                 x => newe('li', x)))))),
         newe('div', 'Alternatives'),
@@ -482,6 +482,7 @@ modes.evaluation_vda = function()
    {let cs = JSON.parse(previous_visit_data.criteria)
     let alts = JSON.parse(previous_visit_data.alts)
     show_scenario('redisplay_subject_scenario', cs, alts)
+    mark_levels('mode__evaluation_vda')
     E('redisplay_vda_result').textContent =
         JSON.parse(previous_visit_data.dominance)
       ? "According to your definitions, the alternative " +
