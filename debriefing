@@ -2,6 +2,8 @@
 
 <h2>Debriefing</h2>
 
+<p><strong>Reading this is optional.</strong></p>
+
 <p>The core idea of this study is pretty simple. I've written a computer program that's supposed to help people make decisions, and I want to see how well people can use it and how much it helps. So, I randomly assigned you to either use the program or not. I hope to find that people who use the program feel that they make better decisions, and are happier with the choices they make.
 
 <p>The program is called Artiruno, and it's based on a method for multiple-criteria decision-making called verbal decision analysis (VDA). VDA is distinguished by its theoretical basis in research on the psychology of decision-making, and by its relatively weak assumptions about the decision-maker's preference structure. Artiruno draws particularly from ZAPROS (Larichev & Moshkovich, 1995) and UniComBOS (Ashikhmin & Furems, 2005). You can find Artiruno at <code>https://github.com/Kodiologist/Artiruno</code>.
