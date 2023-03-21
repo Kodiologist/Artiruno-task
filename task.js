@@ -119,6 +119,21 @@ let digest_evaluation_inputs = function(id)
         save(k, v)}
     return true}
 
+let get_dominator = function(cs, alts)
+  // Look for an alt that dominates all others. We need not check
+  // for non-strict dominance (i.e., equality) because alts were
+  // required to be distinct in an earlier step.
+   {CANDIDATE: for (let candidate of alts)
+       {for (let other of alts)
+           {if (other === candidate)
+                continue
+            for (let ci = 0 ; ci < cs.length ; ++ci)
+                if (cs[ci][1].indexOf(other[1][ci]) >
+                        cs[ci][1].indexOf(candidate[1][ci]))
+                    continue CANDIDATE}
+        return candidate}
+    return null}
+
 // ------------------------------------------------------------
 // * Startup
 // ------------------------------------------------------------
@@ -385,22 +400,7 @@ modes.problem_setup = function()
         mode('check_dominance')})}
 
 modes.check_dominance = function()
-   {// Look for an alt that dominates all others. We need not check
-    // for non-strict dominance (i.e., equality) because alts were
-    // required to be distinct in an earlier step.
-    let dominator = null
-    let cs = saved.criteria
-    CANDIDATE: for (let candidate of saved.alts)
-       {for (let other of saved.alts)
-           {if (other === candidate)
-                continue
-            for (let ci = 0 ; ci < cs.length ; ++ci)
-                if (cs[ci][1].indexOf(other[1][ci]) >
-                        cs[ci][1].indexOf(candidate[1][ci]))
-                    continue CANDIDATE}
-        dominator = candidate
-        break CANDIDATE}
-
+   {let dominator = get_dominator(saved.criteria, saved.alts)
     if (!dominator)
        {save('dominance', false)
         return mode('vda')}
