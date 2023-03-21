@@ -479,11 +479,15 @@ modes.evaluation_either = function()
             mode('debrief')})}
 
 modes.evaluation_vda = function()
-   {show_scenario('redisplay_subject_scenario',
-        JSON.parse(previous_visit_data.criteria),
-        JSON.parse(previous_visit_data.alts))
+   {let cs = JSON.parse(previous_visit_data.criteria)
+    let alts = JSON.parse(previous_visit_data.alts)
+    show_scenario('redisplay_subject_scenario', cs, alts)
     E('redisplay_vda_result').textContent =
-        JSON.parse(previous_visit_data.vda_result)
+        JSON.parse(previous_visit_data.dominance)
+      ? "According to your definitions, the alternative " +
+          get_dominator(cs, alts)[0] +
+          " dominates the others. This means that on all criteria, it's at least as good as all your other alternatives."
+      : JSON.parse(previous_visit_data.vda_result).replace(/\.?$/, '.')
 
     BC('evaluation_vda_done', function()
        {if (!digest_evaluation_inputs('mode__evaluation_vda'))
