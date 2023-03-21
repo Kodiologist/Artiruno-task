@@ -467,8 +467,8 @@ modes.demog = function()
         mode('done')})}
 
 modes.evaluation_either = function()
-   {for (let k of ['problem_description', 'expected_resolution_date'])
-        E('redisplay_' + k).textContent = JSON.parse(previous_visit_data[k])
+   {E('redisplay_problem_description').textContent =
+        JSON.parse(previous_visit_data.problem_description)
 
     BC('evaluation_either_done', function()
        {if (!digest_evaluation_inputs('mode__evaluation_either'))
