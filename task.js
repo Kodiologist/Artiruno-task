@@ -119,6 +119,30 @@ let digest_evaluation_inputs = function(id)
         save(k, v)}
     return true}
 
+let mark_levels = function(parent_id)
+  // Mark the best and worst levels of each criterion.
+  // If there's only one level, mark it as the worst.
+   {for (let criterion_list of E(parent_id)
+            .getElementsByClassName('criteria'))
+        for (let criterion of criterion_list.children)
+            {if (criterion.id == 'new_criterion_li')
+                 continue
+            for (let level of criterion.getElementsByTagName('li'))
+               {if (level.className === 'new_level_li')
+                    continue
+                if (level.firstChild.tagName !== 'SPAN')
+                    level.insertBefore(newe('span'), level.firstChild)
+                let note = level.firstChild
+                note.textContent = ''
+                note.className = 'note'
+                if (level.previousSibling === null)
+                   {note.textContent = '(worst)'
+                    note.classList.add('worst')}
+                else if (level.nextSibling === null ||
+                        level.nextSibling.className === 'new_level_li')
+                   {note.textContent = '(best)'
+                    note.classList.add('best')}}}}
+
 let get_dominator = function(cs, alts)
   // Look for an alt that dominates all others. We need not check
   // for non-strict dominance (i.e., equality) because alts were
@@ -311,7 +335,7 @@ modes.problem_setup = function()
                 v.children[1].value.trim())])
 
     let regen = function(event, alt)
-       {mark_levels()
+       {mark_levels('mode__problem_setup')
         // Reset the criterion <select> elements for each alternative
         // (or only `alt`, if given).
         let criteria = digest_criteria()
@@ -324,31 +348,7 @@ modes.problem_setup = function()
                     newe('select', ...levels.map(v =>
                         newe('option', v))))))}}
 
-    let mark_levels = function()
-      // Mark the best and worst levels of each criterion.
-      // If there's only one level, mark it as the worst.
-       {for (let criterion_list of E('mode__problem_setup')
-                .getElementsByClassName('criteria'))
-            for (let criterion of criterion_list.children)
-                {if (criterion.id == 'new_criterion_li')
-                     continue
-                for (let level of criterion.getElementsByTagName('li'))
-                   {if (level.className === 'new_level_li')
-                        continue
-                    if (level.firstChild.tagName !== 'SPAN')
-                        level.insertBefore(newe('span'), level.firstChild)
-                    let note = level.firstChild
-                    note.textContent = ''
-                    note.className = 'note'
-                    if (level.previousSibling === null)
-                       {note.textContent = '(worst)'
-                        note.classList.add('worst')}
-                    else if (level.nextSibling === null ||
-                            level.nextSibling.className === 'new_level_li')
-                       {note.textContent = '(best)'
-                        note.classList.add('best')}}}}
-
-    mark_levels()
+    mark_levels('mode__problem_setup')
 
     BC('new_alt', function()
        {E('alt_entry').insertBefore(
