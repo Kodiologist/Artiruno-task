@@ -21,7 +21,7 @@ def main(tracking_file_path, n_to_invite):
 
     for sn in to_reinvite:
         d = track[sn]
-        prolific.api('POST', 'messages', json = dict(
+        prolific.api('POST', 'messages/', json = dict(
             recipient_id = d['prolific_pid'],
             body = msg_fmt.format(d['desc']),
             study_id = d['prolific_study']))
